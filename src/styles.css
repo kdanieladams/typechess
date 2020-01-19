@@ -65,11 +65,6 @@ p {
     margin: 0 0 5px 0;
 }
 
-.file {
-    width: 80px;
-    float: left;
-}
-
 .colLeft50, .colRight50 {
     width: 50%;
 }
@@ -81,6 +76,15 @@ p {
 }
 .colRight50 {
     float: right;
+}
+
+.file {
+    width: 80px;
+    float: left;
+}
+
+.hidden {
+    display: none;
 }
 
 .rank {

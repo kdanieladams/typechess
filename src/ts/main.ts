@@ -1,10 +1,12 @@
 import '../styles.css';
+import { Board } from './lib/Board';
 
 /**
  * Start
  */
 window.addEventListener('load', (event) => {
-    setTimeout(() => {
-        alert('It worked! Holy schnickes, Batman!');
-    }, 2000);
+    let canvas = document.getElementById('chess_board') as HTMLCanvasElement;
+    let pieces = document.getElementById('pieces_img') as HTMLImageElement;
+    let board = new Board(canvas, pieces);
+    board.draw();
 });
