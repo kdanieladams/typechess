@@ -22,6 +22,8 @@ export class Cell {
         this.file = file;
         this.rank = rank;
         this.isLight = !!isLight ? true : false;
+
+        return this;
     }
 
     getFile() {
