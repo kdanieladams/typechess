@@ -1,6 +1,15 @@
 /**
  * HTML Elements
  */
+a:link, a:visited, a:active {
+    color: #900;
+    text-decoration: none;
+}
+a:hover {
+    color: #c00;
+    text-decoration: underline;
+}
+
  body {
     background-color: #121212;
     color: #919191;
@@ -26,6 +35,10 @@ button > span.symbol {
     line-height: 0;
 }
 
+h1, h2, h3 {
+    text-align: center;
+}
+
 p {
     max-width: 940px;
     margin: 10px auto;
@@ -35,12 +48,6 @@ p {
 /**
  * Classes
  */
-.boardContainer {
-    display: inline-block;
-    margin: 10px;
-    width: 675px;
-}
-
 .center {
     text-align: center;
 }
@@ -50,123 +57,19 @@ p {
     font-family: Courier;
 }
 
-.colLeft {
-    float: left;
-    width: 25%;
-}
-
-.colRight {
-    float: right;
-    width: 75%;
-}
-
-.colLeft h4, .colRight h4 {
-    text-align: center;
-    margin: 0 0 5px 0;
-}
-
-.colLeft50, .colRight50 {
-    width: 50%;
-}
-.colLeft50 h4, .colRight50 h4 {
-    margin-bottom: 5px;
-}
-.colLeft50 {
-    float: left;
-}
-.colRight50 {
-    float: right;
-}
-
-.file {
-    width: 80px;
-    float: left;
-}
-
 .hidden {
     display: none;
-}
-
-.rank {
-    height: 80px;
-    line-height: 80px;
-}
-
-.row {
-    width: 100%;
-}
-
-.row::after {
-    content: "";
-    clear: both;
-    display: table;
-}
-
-.topMsg {
-    color: #ccc;
-}
-
-.undoBtn {
-    background-color: #c00;
-    color: #ccc;
-}
-
-.undoBtn:active {
-    background-color: #500;
 }
 
 /**
  * IDs
  */
-#black_captures, #white_captures {
-    margin-left: 20px;
-    max-width: 311px;
-    min-height: 80px;
-}
-#black_captures {
-    background-color: #333;
-}
-#white_captures {
-    background-color: #919191;
-}
-
 #chess_board {
-    display: inline;
-    margin: 10px 0 0 0;
+    display: block;
+    margin: 10px auto;
     border: solid 1px #999;
-}
-
-#file_row {
-    margin-left: 20px;
 }
 
 #pieces_img {
     display: none;
-}
-
-#rank_col {
-    float: left;
-    margin: 11px 0 0 0;
-    width: 20px;
-}
-
-#score_box {
-    padding: 10px;
-    text-align: left;
-    background-color: #212121;
-}
-
-#score_box > .teamScore {
-    display: block;
-}
-
-#status_box {
-    height: 75px;
-    padding-top: 10px;
-    overflow-x: hidden;
-    overflow-y: scroll;
-    border: solid 1px #999;
-    color: #555;
-    text-align: center;
-    font-size: 16px;
 }
