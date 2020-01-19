@@ -63,4 +63,24 @@ export class Board {
             this.ctx.closePath();
         }
     }
+
+    getCellByCoord(coord: string) {
+        if(!this._validateCoord(coord)) {
+            console.error('Board.getCellByCoord: invalid coord value.');
+            return;
+        }
+
+        var file = coord[0];
+        var rank = parseInt(coord[1]);
+        var index = ((rank * NUMFILES) - NUMRANKS) + FILE[file];
+
+        return this.cells[index];
+    }
+
+    getCellByPixels(xPos: number, yPos: number) {
+        var file = FILE[Math.floor(xPos / CELLWIDTH)];
+        var rank = NUMRANKS - Math.floor(yPos / CELLWIDTH);
+
+        return this.getCellByCoord("" + file + rank);
+    }
 }

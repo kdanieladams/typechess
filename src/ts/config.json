@@ -1,4 +1,10 @@
 {
     "canvasId": "chess_board",
-    "piecesImgId": "pieces_img"
+    "piecesImgId": "pieces_img",
+    "cellWidth": 80,
+    "spriteWidth": 100,
+    "colorSqLight": "#919191",
+    "colorSqDark": "#333",
+    "colorSqPossible": "#40ff00",
+    "colorSqCastleable": "#5900b3"
 }

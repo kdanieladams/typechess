@@ -1,3 +1,6 @@
+import * as config from './config.json';
+
+
 /**
  * Enums
  */
@@ -27,13 +30,24 @@ export enum FILE {
     h = 7
 }
 
+
 /**
  * Colors
  */
-export const LIGHTSQCOLOR       = '#919191';
-export const DARKSQCOLOR        = '#333';
-export const POSSIBLESQCOLOR    = '#40ff00';
-export const CASTLEABLESQCOLOR  = '#5900b3';
+export const LIGHTSQCOLOR       = config.hasOwnProperty('colorSqLight') ? config.colorSqLight : '#919191';
+export const DARKSQCOLOR        = config.hasOwnProperty('colorSqDark') ? config.colorSqDark : '#333';
+export const POSSIBLESQCOLOR    = config.hasOwnProperty('colorSqPossible') ? config.colorSqPossible : '#40ff00';
+export const CASTLEABLESQCOLOR  = config.hasOwnProperty('colorSqCastleable') ? config.colorSqCastleable : '#5900b3';
+
+
+/**
+ * Dimensions
+ */
+export const NUMRANKS           = 8;
+export const NUMFILES           = Object.keys(FILE).length / 2;
+export const CELLWIDTH          = config.hasOwnProperty('cellWidth') ? config.cellWidth : 80;
+export const PIECESPRITEWIDTH   = config.hasOwnProperty('spriteWidth') ? config.spriteWidth : 100;
+
 
 /**
  * Functions
@@ -54,11 +68,3 @@ export const GETENUMKEY = function(enumerable: any, index: number) {
         }
     }
 }
-
-/**
- * Dimensions
- */
-export const NUMRANKS = 8;
-export const NUMFILES = Object.keys(FILE).length / 2;
-export const PIECESPRITEWIDTH = 100;
-export const CELLWIDTH = 80;
