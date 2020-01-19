@@ -29,7 +29,7 @@ export class Board {
         if(coord.length != 2) {
             return false;
         }
-        else if(!Object.keys(FILE).includes(coord[0])) {
+        else if(!isNaN(parseInt(coord[0])) || !Object.keys(FILE).includes(coord[0])) {
             return false;
         }
         else {
