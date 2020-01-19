@@ -1,3 +1,10 @@
-window.setTimeout(function(){
-    alert('it worked! hooray!');
-}, 5000);
+import '../styles.css';
+
+/**
+ * Start
+ */
+window.addEventListener('load', (event) => {
+    setTimeout(() => {
+        alert('It worked! Holy schnickes, Batman!');
+    }, 2000);
+});
