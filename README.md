@@ -21,4 +21,3 @@ This is simply my way of figuring out chess for JavaScript, it's not intended to
     npm start
     ```
 5. Visit the appropriate URL in a browser (defaults to http://localhost:3000, configured in `config/webpack.dev.js`).
-6. 
