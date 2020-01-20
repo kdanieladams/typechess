@@ -43,6 +43,7 @@ p {
     max-width: 940px;
     margin: 10px auto;
     line-height: 1.5em;
+    text-align: justify;
 }
 
 /**

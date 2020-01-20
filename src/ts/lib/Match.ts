@@ -38,8 +38,8 @@ export class Match {
     }
 
     click(event: MouseEvent) {
-        var cell = this.board.getCellByPixels(event.offsetX, event.offsetY);
-        var activeTeam = this.team1.side == this.whosTurn() ? this.team1 : this.team2;
+        let cell = this.board.getCellByPixels(event.offsetX, event.offsetY);
+        let activeTeam = this.team1.side == this.whosTurn() ? this.team1 : this.team2;
 
         // select a piece to move
         if(cell.isOccupied() && cell.piece.side == activeTeam.side) {
