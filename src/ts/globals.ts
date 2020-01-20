@@ -34,10 +34,10 @@ export enum FILE {
 /**
  * Colors
  */
-export const LIGHTSQCOLOR       = config.hasOwnProperty('colorSqLight') ? config.colorSqLight : '#919191';
-export const DARKSQCOLOR        = config.hasOwnProperty('colorSqDark') ? config.colorSqDark : '#333';
-export const POSSIBLESQCOLOR    = config.hasOwnProperty('colorSqPossible') ? config.colorSqPossible : '#40ff00';
-export const CASTLEABLESQCOLOR  = config.hasOwnProperty('colorSqCastleable') ? config.colorSqCastleable : '#5900b3';
+export const LIGHTSQCOLOR       = config.colorSqLight;
+export const DARKSQCOLOR        = config.colorSqDark;
+export const POSSIBLESQCOLOR    = config.colorSqPossible;
+export const CASTLEABLESQCOLOR  = config.colorSqCastleable;
 
 
 /**
@@ -45,8 +45,9 @@ export const CASTLEABLESQCOLOR  = config.hasOwnProperty('colorSqCastleable') ? c
  */
 export const NUMRANKS           = 8;
 export const NUMFILES           = Object.keys(FILE).length / 2;
-export const CELLWIDTH          = config.hasOwnProperty('cellWidth') ? config.cellWidth : 80;
-export const PIECESPRITEWIDTH   = config.hasOwnProperty('spriteWidth') ? config.spriteWidth : 100;
+export const CELLWIDTH          = config.cellWidth;
+export const PIECESPRITEWIDTH   = config.spriteWidth;
+export const CANVASMARGIN       = config.canvasMargin;
 
 
 /**
@@ -57,14 +58,17 @@ export const CAPITALIZE = function(str: string){
 };
 
 export const GETENUMKEY = function(enumerable: any, index: number) {
-    let keys = Object.keys(enumerable);
-    for(let i = 0; i < keys.length; i++) {
-        let key = keys[i],
-            member = enumerable[key],
+    let keys = Object.keys(enumerable),
+        ret: any;
+
+    keys.forEach((key, i) => {
+        let member = enumerable[key],
             isValueProperty = parseInt(member, 10) >= 0;
-        
+
         if (isValueProperty && (i - (keys.length / 2)) == index) {
-           return enumerable[member];
+            ret = enumerable[member];
         }
-    }
+    });
+
+    return ret;
 }

@@ -1,10 +1,13 @@
-import { CELLWIDTH, DARKSQCOLOR, FILE, NUMFILES, NUMRANKS, LIGHTSQCOLOR } from '../globals';
+import { CANVASMARGIN, CELLWIDTH, DARKSQCOLOR, FILE, NUMFILES, NUMRANKS, LIGHTSQCOLOR } from '../globals';
 import { Cell } from './Cell';
 
 /**
  * Board
  */
 export class Board {
+    private _canvas_offset_x: number = 0;
+    private _canvas_offset_y: number = 0;
+
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
     cells: Cell[] = new Array();
@@ -14,6 +17,11 @@ export class Board {
         this.canvas = canvas;
         this.pieces_img = pieces_img;
         this.ctx = canvas.getContext('2d');
+
+        let boardWidth = NUMFILES * CELLWIDTH,
+            boardHeight = NUMRANKS * CELLWIDTH;
+        this._canvas_offset_x = (canvas.width - boardWidth) / 2;
+        this._canvas_offset_y = CANVASMARGIN + 150;
 
         for(let row = 0; row < NUMRANKS; row++) {
             for(let col = 0; col < NUMFILES; col++) {
@@ -51,17 +59,16 @@ export class Board {
             darkCol = DARKSQCOLOR,
             cellWidth = CELLWIDTH;
 
-        for(let i = 0; i < this.cells.length; i++) {
-            let cell = this.cells[i];
-            let xPos = cell.file * cellWidth;
-            let yPos = (NUMRANKS * cellWidth) - (cellWidth * (cell.rank - 1)) - cellWidth;
+        this.cells.forEach(cell => {
+            let xPos = (cell.file * cellWidth) + this._canvas_offset_x;
+            let yPos = ((NUMRANKS * cellWidth) - (cellWidth * (cell.rank - 1)) - cellWidth) + this._canvas_offset_y;
 
             // draw the cell
             this.ctx.beginPath();
             this.ctx.fillStyle = cell.isLight ? lightCol : darkCol;
             this.ctx.fillRect(xPos, yPos, cellWidth, cellWidth);
             this.ctx.closePath();
-        }
+        });
     }
 
     getCellByCoord(coord: string) {
@@ -78,8 +85,8 @@ export class Board {
     }
 
     getCellByPixels(xPos: number, yPos: number) {
-        var file = FILE[Math.floor(xPos / CELLWIDTH)];
-        var rank = NUMRANKS - Math.floor(yPos / CELLWIDTH);
+        var file = FILE[Math.floor((xPos - this._canvas_offset_x) / CELLWIDTH)];
+        var rank = NUMRANKS - Math.floor((yPos - this._canvas_offset_y) / CELLWIDTH);
 
         return this.getCellByCoord("" + file + rank);
     }

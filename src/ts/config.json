@@ -1,6 +1,7 @@
 {
     "canvasId": "chess_board",
     "piecesImgId": "pieces_img",
+    "canvasMargin": 20,
     "cellWidth": 80,
     "spriteWidth": 100,
     "colorSqLight": "#919191",

@@ -50,6 +50,21 @@ describe('Test Board', () => {
         });
     });
 
+    describe('draw()', () => {
+        it('should be able to draw without errors', () => {
+            let err: Error;
+            
+            try {
+                brd.draw();
+            }
+            catch(e) {
+                err = e;
+            }
+
+            expect(err).to.equal(undefined);
+        });
+    });
+
     describe('getCellByCoord()', () => {
         it('should return a Cell instance when provided with a valid coord', () => {
             let coord = 'b3',
@@ -61,8 +76,8 @@ describe('Test Board', () => {
 
     describe('getCellByPixels()', () => {
         it('should return a Cell instance when provided with pixel coordinates within the boundary of the board', () => {
-            let xPos = 15,
-                yPos = 15,
+            let xPos = 216,
+                yPos = 286,
                 cell = brd.getCellByPixels(xPos, yPos);
 
             expect(cell).to.be.instanceOf(Cell);

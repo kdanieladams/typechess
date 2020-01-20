@@ -11,4 +11,9 @@ window.addEventListener('load', (event) => {
         board = new Board(canvas, pieces);
     
     board.draw();
+    canvas.addEventListener('click', (event) => {
+        let cell = board.getCellByPixels(event.offsetX, event.offsetY);
+        console.log('You clicked ' + event.offsetX + ' x ' + event.offsetY);
+        console.log('Board returned: ' + cell.getCoord());
+    });
 });

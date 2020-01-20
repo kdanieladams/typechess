@@ -65,10 +65,10 @@ export class Pawn extends Piece {
         }
 
         // highlight possible moves on the board
-        for(let i = 0; i < this.possibleMoves.length; i++) {
-            let cell = board.getCellByCoord(this.possibleMoves[i]);
+        this.possibleMoves.forEach(coord => {
+            let cell = board.getCellByCoord(coord);
             cell.possibleMove = true;
-        }
+        });
 
         return this.possibleMoves;
     }
