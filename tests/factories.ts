@@ -1,6 +1,19 @@
 import { FILE, NUMRANKS, SIDE } from '../src/ts/globals';
+import { Board } from '../src/ts/lib/Board';
 import { Cell } from '../src/ts/lib/Cell';
 import { Pawn } from '../src/ts/lib/pieces/Pawn';
+
+/**
+ * Board Factory
+ */
+export const BoardFactory = function() {
+    const jsdom = require('jsdom');
+    const { JSDOM } = jsdom;
+    let dom = new JSDOM(`<!DOCTYPE html><canvas id="test_canvas" width="640" height="640"></canvas><img id="test_img">`),
+        document = dom.window.document;
+    
+    return new Board(document.getElementById('test_canvas'), document.getElementById('test_img'));
+};
 
 /**
  * Cell Factory

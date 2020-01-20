@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import { NUMFILES, NUMRANKS } from '../src/ts/globals';
 import { Board } from '../src/ts/lib/Board';
+import { BoardFactory } from './factories';
 import { Cell } from '../src/ts/lib/Cell';
 import 'mocha';
 
@@ -11,12 +12,7 @@ describe('Test Board', () => {
     let brd: Board;
 
     before(() => {
-        const jsdom = require('jsdom');
-        const { JSDOM } = jsdom;
-        let dom = new JSDOM(`<!DOCTYPE html><canvas id="test_canvas"></canvas><img id="test_img">`),
-            document = dom.window.document;
-        
-        brd = new Board(document.getElementById('test_canvas'), document.getElementById('test_img'));
+        brd = BoardFactory();
     });
 
     it('should be constructable', () => {

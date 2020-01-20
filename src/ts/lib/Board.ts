@@ -68,6 +68,11 @@ export class Board {
             this.ctx.fillStyle = cell.isLight ? lightCol : darkCol;
             this.ctx.fillRect(xPos, yPos, cellWidth, cellWidth);
             this.ctx.closePath();
+
+            // draw any pieces occupying this cell
+            if(cell.isOccupied()) {
+                cell.piece.draw(this.pieces_img, this.ctx, xPos, yPos, cellWidth);
+            }
         });
     }
 
