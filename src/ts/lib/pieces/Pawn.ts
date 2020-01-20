@@ -24,22 +24,22 @@ export class Pawn extends Piece {
     }
 
     canMove(board: Board) {
-        var file = this._cell.file;
-        var rank = this._cell.rank;
+        let file = this._cell.file;
+        let rank = this._cell.rank;
 
         this.active = true;
         this.possibleMoves = [];
 
         // can always move forward 1 sq
-        var mv1sq = "" + this._cell.getFile() + (rank + this._forward);
-        var cell1 = board.getCellByCoord(mv1sq);
+        let mv1sq = "" + this._cell.getFile() + (rank + this._forward);
+        let cell1 = board.getCellByCoord(mv1sq);
         if(board.cellInBounds(mv1sq) && !cell1.isOccupied()) {
             this.possibleMoves.push(mv1sq);
         }
 
         // on first move, can move 2 sqs
-        var mv2sq = "" + this._cell.getFile() + (rank + this._forward + this._forward);
-        var cell2 = board.getCellByCoord(mv2sq);
+        let mv2sq = "" + this._cell.getFile() + (rank + this._forward + this._forward);
+        let cell2 = board.getCellByCoord(mv2sq);
         if(!this.hasMoved && board.cellInBounds(mv2sq)
             && !cell2.isOccupied() && !cell1.isOccupied())
         {
@@ -47,8 +47,8 @@ export class Pawn extends Piece {
         }
 
         // can only attack diagonally
-        var oppSide = this.side == SIDE.white ? SIDE.black : SIDE.white;
-        var diagL = "" + Object.keys(FILE)[file - 1] + (rank + this._forward);
+        let oppSide = this.side == SIDE.white ? SIDE.black : SIDE.white;
+        let diagL = "" + FILE[file - 1] + (rank + this._forward);
         if(board.cellInBounds(diagL)) {
             let cell = board.getCellByCoord(diagL);
             if(cell.isOccupied() && cell.piece.side == oppSide) {
@@ -56,7 +56,7 @@ export class Pawn extends Piece {
             }
         }
 
-        var diagR = "" + Object.keys(FILE)[file + 1] + (rank + this._forward);
+        let diagR = "" + FILE[file + 1] + (rank + this._forward);
         if(board.cellInBounds(diagR)) {
             let cell = board.getCellByCoord(diagR);
             if(cell.isOccupied() && cell.piece.side == oppSide) {

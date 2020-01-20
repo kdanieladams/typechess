@@ -1,4 +1,4 @@
-import { CANVASMARGIN, CELLWIDTH, DARKSQCOLOR, FILE, NUMFILES, NUMRANKS, LIGHTSQCOLOR } from '../globals';
+import { CANVASMARGIN, CELLWIDTH, DARKSQCOLOR, FILE, NUMFILES, NUMRANKS, LIGHTSQCOLOR, POSSIBLESQCOLOR, CASTLEABLESQCOLOR } from '../globals';
 import { Cell } from './Cell';
 
 /**
@@ -54,6 +54,13 @@ export class Board {
         return this._validateCoord(coord);
     }
 
+    clearPossible() {
+        this.cells.forEach(cell => {
+            cell.possibleMove = false;
+            cell.castleable = false;
+        });
+    }
+
     draw() {
         let lightCol = LIGHTSQCOLOR,
             darkCol = DARKSQCOLOR,
@@ -66,8 +73,35 @@ export class Board {
             // draw the cell
             this.ctx.beginPath();
             this.ctx.fillStyle = cell.isLight ? lightCol : darkCol;
+
+            // highlight the active piece
+            if(cell.isOccupied() && cell.piece.active) { 
+                this.ctx.fillStyle = POSSIBLESQCOLOR;
+            }
+
             this.ctx.fillRect(xPos, yPos, cellWidth, cellWidth);
             this.ctx.closePath();
+
+            // highlight possible moves
+            if(cell.possibleMove) {
+                // offset by half lineWidth so highlight fits within square
+                let lineWidth = 6,
+                    pxPos = xPos + (lineWidth * 0.5),
+                    pyPos = yPos + (lineWidth * 0.5),
+                    pCellWidth = cellWidth - lineWidth;
+
+                this.ctx.beginPath();
+                this.ctx.lineWidth = lineWidth;
+                this.ctx.strokeStyle = POSSIBLESQCOLOR;
+
+                if(cell.castleable) {
+                    this.ctx.strokeStyle = CASTLEABLESQCOLOR;
+                }
+
+                this.ctx.rect(pxPos, pyPos, pCellWidth, pCellWidth);
+                this.ctx.stroke();
+                this.ctx.closePath();
+            }
 
             // draw any pieces occupying this cell
             if(cell.isOccupied()) {

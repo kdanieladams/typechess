@@ -1,4 +1,4 @@
-import { SIDE } from '../globals';
+import { CAPITALIZE, SIDE } from '../globals';
 import { Piece } from './pieces/_Piece';
 import { Pawn } from './pieces/Pawn';
 import { Rook } from './pieces/Rook';
@@ -49,5 +49,9 @@ export class Team {
         this.pieces.forEach(piece => {
             piece.active = false;
         });
+    }
+
+    getSide() {
+        return CAPITALIZE(SIDE[this.side]);
     }
 }

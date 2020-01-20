@@ -52,9 +52,10 @@ export abstract class Piece {
         return moves;
     }
 
-    // canMove() {
-    //     console.error("Piece.canMove: canMove has not been implemented!");
-    // }
+    canMove(board: Board) {
+        console.error("Piece.canMove: canMove has not been implemented!");
+        return [];
+    }
 
     draw(img: HTMLImageElement, ctx: CanvasRenderingContext2D, xPos: number, yPos: number, cellWidth: number) {
         var clipX = img.naturalWidth - (this.type * PIECESPRITEWIDTH),

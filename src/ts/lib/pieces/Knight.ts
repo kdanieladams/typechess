@@ -17,10 +17,10 @@ export class Knight extends Piece {
         ];
     }
 
-    canMove(board: Board) {        
-        var file = this._cell.file;
-        var rank = this._cell.rank;
-        var testMoves = new Array();
+    canMove(board: Board) {
+        let file = this._cell.file;
+        let rank = this._cell.rank;
+        let testMoves = new Array();
         
         this.active = true;
         this.possibleMoves = [];

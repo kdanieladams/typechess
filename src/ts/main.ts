@@ -15,11 +15,8 @@ window.addEventListener('load', (event) => {
         match = new Match(new Board(canvas, pieces), new Team(SIDE.white), new Team(SIDE.black));
     
     match.board.draw();
-    // match.team1.pieces[0].getDiagMoves(match.board, true, true);
 
-    // canvas.addEventListener('click', (event) => {
-    //     let cell = match.board.getCellByPixels(event.offsetX, event.offsetY);
-    //     console.log('You clicked ' + event.offsetX + ' x ' + event.offsetY);
-    //     console.log('Board returned: ' + cell.getCoord());
-    // });
+    canvas.addEventListener('click', (event) => {
+        match.click(event);
+    });
 });
