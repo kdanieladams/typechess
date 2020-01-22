@@ -66,6 +66,15 @@ export class Board {
             darkCol = DARKSQCOLOR,
             cellWidth = CELLWIDTH;
 
+        // clear the canvas
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // draw the canvas background
+        this.ctx.beginPath()
+        this.ctx.fillStyle = '#121212';
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.closePath();
+
         this.cells.forEach(cell => {
             let xPos = (cell.file * cellWidth) + this._canvas_offset_x;
             let yPos = ((NUMRANKS * cellWidth) - (cellWidth * (cell.rank - 1)) - cellWidth) + this._canvas_offset_y;
@@ -112,20 +121,20 @@ export class Board {
 
     getCellByCoord(coord: string) {
         if(!this._validateCoord(coord)) {
-            console.error('Board.getCellByCoord: invalid coord value.');
+            // console.error('Board.getCellByCoord: invalid coord value.');
             return;
         }
 
-        var file = coord[0];
-        var rank = parseInt(coord[1]);
-        var index = ((rank * NUMFILES) - NUMRANKS) + FILE[file];
+        let file = coord[0];
+        let rank = parseInt(coord[1]);
+        let index = ((rank * NUMFILES) - NUMRANKS) + FILE[file];
 
         return this.cells[index];
     }
 
     getCellByPixels(xPos: number, yPos: number) {
-        var file = FILE[Math.floor((xPos - this._canvas_offset_x) / CELLWIDTH)];
-        var rank = NUMRANKS - Math.floor((yPos - this._canvas_offset_y) / CELLWIDTH);
+        let file = FILE[Math.floor((xPos - this._canvas_offset_x) / CELLWIDTH)];
+        let rank = NUMRANKS - Math.floor((yPos - this._canvas_offset_y) / CELLWIDTH);
 
         return this.getCellByCoord("" + file + rank);
     }

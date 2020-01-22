@@ -14,7 +14,7 @@ window.addEventListener('load', (event) => {
         pieces = document.getElementById(config.piecesImgId) as HTMLImageElement,
         match = new Match(new Board(canvas, pieces), new Team(SIDE.white), new Team(SIDE.black));
     
-    match.board.draw();
+    match.draw();
 
     canvas.addEventListener('click', (event) => {
         match.click(event);

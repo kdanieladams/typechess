@@ -54,4 +54,15 @@ export class Team {
     getSide() {
         return CAPITALIZE(SIDE[this.side]);
     }
+
+    getScore() {
+        var score = 0;
+
+        for(let i = 0; i < this.captures.length; i++) {
+            let capture = this.captures[i];
+            score += capture.value;
+        }
+
+        return score;
+    }
 }

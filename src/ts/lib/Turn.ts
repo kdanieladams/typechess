@@ -7,11 +7,12 @@ import { Piece } from './pieces/_piece.js';
  * Half-turn or action of one team (white OR black).
  */
 export class Turn {
-    captures = new Array();
-    endCoord = '';
+    captures: Piece[] = new Array();
+    endCoord: string = '';
     movedPiece: Piece = null;
     side: SIDE = null;
-    startCoord = '';
+    startCoord: string = '';
+    msgs: string[] = new Array();
     
     constructor(piece: Piece, moveTo: string) {
         if(moveTo.length == 2) {

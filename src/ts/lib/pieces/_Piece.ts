@@ -22,7 +22,7 @@ export abstract class Piece {
     }
 
     private _iterateMoves(board: Board, coord: string, incFile: number, incRank: number) {
-        var moves = new Array();
+        let moves = new Array();
 
         while(board.cellInBounds(coord)) {
             let file = FILE[coord[0]];
@@ -58,7 +58,7 @@ export abstract class Piece {
     }
 
     draw(img: HTMLImageElement, ctx: CanvasRenderingContext2D, xPos: number, yPos: number, cellWidth: number) {
-        var clipX = img.naturalWidth - (this.type * PIECESPRITEWIDTH),
+        let clipX = img.naturalWidth - (this.type * PIECESPRITEWIDTH),
             clipY = this.side == SIDE.white ? 0 : PIECESPRITEWIDTH,
             clipWidth = PIECESPRITEWIDTH,
             clipHeight = PIECESPRITEWIDTH;
