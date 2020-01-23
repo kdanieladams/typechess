@@ -48,6 +48,7 @@ export class Team {
         this.activePiece = null;
         this.pieces.forEach(piece => {
             piece.active = false;
+            piece.possibleMoves = [];
         });
     }
 

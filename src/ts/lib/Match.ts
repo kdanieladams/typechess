@@ -1,6 +1,7 @@
 import { CANVASMARGIN, FILE, PIECETYPE, SIDE } from '../globals';
 import { Board } from './Board';
 import { Cell } from './Cell';
+import { ChessAi } from './ChessAi';
 import { Piece } from './pieces/_Piece';
 import { Team } from './Team';
 import { Turn } from './Turn';
@@ -11,7 +12,9 @@ import { Rook } from './pieces/Rook';
  * Match
  */
 export class Match {
+    ai: ChessAi;
     board: Board;
+    checkmate: boolean = false;
     team1: Team;
     team2: Team;
     turns: Turn[] = new Array();
@@ -30,6 +33,7 @@ export class Match {
 
             this.setupPieces(this.team1);
             this.setupPieces(this.team2);
+            this.ai = new ChessAi(this.board);
 
             return this;
         }
@@ -48,45 +52,47 @@ export class Match {
         let cell = this.board.getCellByPixels(event.offsetX, event.offsetY);
         let activeTeam = this.team1.side == this.whosTurn() ? this.team1 : this.team2;
 
-        // select a piece to move
-        if(cell && cell.isOccupied() && cell.piece.side == activeTeam.side) {
-            let piece = cell.piece;
+        if(!this.checkmate) {
+            // select a piece to move
+            if(cell && cell.isOccupied() && cell.piece.side == activeTeam.side) {
+                let piece = cell.piece;
 
-            this.clearPossible();
-            activeTeam.activePiece = piece;
-            piece.canMove(this.board);
-            this.draw();
-        }
-        // move a piece to a possible cell
-        else if(activeTeam.activePiece != null && cell.possibleMove) {
-            
-            this.startTurn(activeTeam.activePiece, cell);
+                this.clearPossible();
+                activeTeam.activePiece = piece;
+                piece.canMove(this.board);
+                this.draw();
+            }
+            // move a piece to a possible cell
+            else if(activeTeam.activePiece != null && cell.possibleMove) {
+                
+                this.startTurn(activeTeam.activePiece, cell);
 
-            if(activeTeam.activePiece.type == PIECETYPE.king) 
+                if(activeTeam.activePiece.type == PIECETYPE.king) 
+                {
+                    let king = activeTeam.activePiece as King;
+                    king.castleMove(cell, this.board);
+                }
+                else {
+                    activeTeam.activePiece.move(cell);
+                }
+
+                this.finishTurn();
+                this.clearPossible();
+                this.draw();
+            }
+            // click undo button 
+            else if(event.offsetX >= this.undoBtn.x 
+                && event.offsetX <= this.undoBtn.x + this.undoBtn.width
+                && event.offsetY >= this.undoBtn.y
+                && event.offsetY <= this.undoBtn.y + this.undoBtn.height) 
             {
-                let king = activeTeam.activePiece as King;
-                king.castleMove(cell, this.board);
+                this.undoMove();
             }
+            // de-select a piece to move
             else {
-                activeTeam.activePiece.move(cell);
+                this.clearPossible();
+                this.draw();
             }
-
-            this.finishTurn();
-            this.clearPossible();
-            this.draw();
-        }
-        // click undo button 
-        else if(event.offsetX >= this.undoBtn.x 
-            && event.offsetX <= this.undoBtn.x + this.undoBtn.width
-            && event.offsetY >= this.undoBtn.y
-            && event.offsetY <= this.undoBtn.y + this.undoBtn.height) 
-        {
-            this.undoMove();
-        }
-        // de-select a piece to move
-        else {
-            this.clearPossible();
-            this.draw();
         }
     }
 
@@ -168,9 +174,15 @@ export class Match {
         let nextTeam = this.team1.side == this.whosTurn() ? this.team1 : this.team2;
         let prevTeam = nextTeam.side == this.team1.side ? this.team2 : this.team1;
 
-        // this.isTeamInCheck(nextTeam, prevTeam);
-        // this.isTeamInCheck(prevTeam, nextTeam);
-        this.updateStatus("It\'s " + nextTeam.getSide() + "\'s turn.");
+        if(this.isTeamInCheck(prevTeam))
+            this.checkmate = this.ai.detectCheckMate(prevTeam, nextTeam);
+        if(this.isTeamInCheck(nextTeam) && !this.checkmate)
+            this.checkmate = this.ai.detectCheckMate(nextTeam, prevTeam);
+
+        if(!this.checkmate)
+            this.updateStatus("It\'s " + nextTeam.getSide() + "\'s turn.");
+        else 
+            this.updateStatus("CHECKMATE!!!! " + prevTeam.getSide() + " wins!");
     }
 
     getBlackTeam() {
@@ -179,6 +191,23 @@ export class Match {
 
     getWhiteTeam() {
         return this.team1.side == SIDE.white ? this.team1 : this.team2;
+    }
+
+    isTeamInCheck(defTeam) {
+        let kingCoord: string = defTeam.pieces[15].getCoord(),
+            offTeam: Team = defTeam.side == SIDE.white ? this.getBlackTeam() : this.getWhiteTeam();
+
+        if(this.ai.detectCheck(kingCoord, offTeam)) {
+            this.updateStatus(defTeam.getSide() + "\'s king is in check!");
+            defTeam.kingInCheck = true;
+            return true;
+        }
+        else if(defTeam.kingInCheck == true) {
+            this.updateStatus(defTeam.getSide() + "\'s king is no longer in check!");
+            defTeam.kingInCheck = false;
+        }
+
+        return false;
     }
 
     setupPieces(team: Team) {

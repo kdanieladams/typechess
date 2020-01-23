@@ -38,19 +38,22 @@ describe('Test Piece', () => {
             yPos = Math.floor(Math.random() * canvas.height);
         });
 
-        it('it should be able to draw without errors', async () => {
+        it('it should be able to draw without errors', (done) => {
             let piece = PieceFactory(),
                 err: Error;
 
-            try {
-                await document.addEventListener('load', () => { piece.draw(img, ctx, xPos, yPos, cellWidth); });
-            }
-            catch(e) {
-                err = e;
-                console.log(e);
-            }
-            
-            expect(err).to.equal(undefined);
+            document.addEventListener('load', () => {
+                try {
+                    piece.draw(img, ctx, xPos, yPos, cellWidth); 
+                }
+                catch(e) {
+                    err = e;
+                    // console.log(e);
+                }
+    
+                expect(err).to.equal(undefined);
+                done();
+            });
         });
     });
 
