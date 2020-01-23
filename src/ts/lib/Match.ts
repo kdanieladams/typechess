@@ -116,7 +116,7 @@ export class Match {
             this.updateStatus("It\'s " + nextTeam.getSide() + "\'s turn.");
         }
         else {
-            this.updateStatus("CHECKMATE!!!! " + prevTeam.getSide() + " wins!");
+            this.updateStatus("CHECKMATE!!! " + prevTeam.getSide() + " wins!");
             prevTeam.captures.push(nextTeam.pieces[15]);
             this.turns[this.turns.length - 1].captures.push(nextTeam.pieces[15]);
             nextTeam.pieces[15].captured = true;

@@ -5,16 +5,23 @@ import { Turn } from './Turn';
 export class Ui {
     private undoBtn: UiBtn;
     private resetBtn: UiBtn;
+    private tieBtn: UiBtn;
+    private saveBtn: UiBtn;
 
     constructor() {
-        let btnWidth = 95, 
-            btnHeight = 35,
-            btnStart = 94;
+        let btnWidth = 91, 
+            btnHeight = 32,
+            btnStart = 94,
+            btnMargin = 3;
 
-        this.undoBtn = new UiBtn('Undo', btnWidth, btnHeight, CANVASMARGIN, 
+        this.undoBtn = new UiBtn('↶ Undo', btnWidth, btnHeight, CANVASMARGIN, 
             btnStart, '#900', '#fff');
-        this.resetBtn = new UiBtn('Reset', btnWidth, btnHeight, CANVASMARGIN, 
-            btnStart + btnHeight);
+        this.resetBtn = new UiBtn('↻ Reset', btnWidth, btnHeight, CANVASMARGIN, 
+            btnStart + btnHeight + btnMargin);
+        this.tieBtn = new UiBtn('📁 Load', btnWidth, btnHeight, CANVASMARGIN + btnWidth + btnMargin, 
+            btnStart);
+        this.saveBtn = new UiBtn('💾 Save', btnWidth, btnHeight, CANVASMARGIN + btnWidth + btnMargin, 
+            btnStart + btnHeight + btnMargin, '#090', '#fff');
     }
 
     private _clickedBtn(event, btn) {
@@ -58,11 +65,11 @@ export class Ui {
         });
         ctx.closePath();
 
-        // draw the last four status messages
+        // draw the last five status messages
         let statusMsgs: string[] = new Array();
         lineHeight = 25;
 
-        for(let i = 0; i < 4; i++) {
+        for(let i = 0; i < 5; i++) {
             let turn: Turn = turns[turns.length - 1 - i];
             if(turn != undefined) {
                 for(let j = 0; j < turn.msgs.length; j++) {
@@ -70,8 +77,8 @@ export class Ui {
                     statusMsgs.push(msg);
                 }
             }
-            if(i == 3) {
-                while(statusMsgs.length > 4){
+            if(i == 4) {
+                while(statusMsgs.length > 5){
                     statusMsgs.pop();
                 }
             }
@@ -89,7 +96,7 @@ export class Ui {
         ctx.closePath();
 
         // draw buttons
-        let btns: UiBtn[] = [this.undoBtn, this.resetBtn];
+        let btns: UiBtn[] = [this.undoBtn, this.resetBtn, this.tieBtn, this.saveBtn];
 
         btns.forEach(btn => {
             ctx.beginPath();
@@ -97,8 +104,10 @@ export class Ui {
             ctx.fillRect(btn.x, btn.y, btn.width, btn.height);
             ctx.fillStyle = btn.textColor;
             ctx.font = UIFONTBTN;
-            ctx.fillText(btn.title, btn.x + 30, btn.y + 22);
+            ctx.textAlign = 'center';
+            ctx.fillText(btn.title, btn.x + (btn.width / 2), btn.y + 22);
             ctx.closePath();
+            ctx.textAlign = 'left';
         });
     }
 }
