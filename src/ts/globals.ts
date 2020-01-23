@@ -51,6 +51,14 @@ export const CANVASMARGIN       = config.canvasMargin;
 
 
 /**
+ * Fonts
+ */
+export const UIFONTLARGE = config.uiFontLarge;
+export const UIFONTSMALL = config.uiFontSmall;
+export const UIFONTBTN = config.uiFontBtn;
+
+
+/**
  * Functions
  */
 export const CAPITALIZE = function(str: string){

@@ -7,5 +7,8 @@
     "colorSqLight": "#919191",
     "colorSqDark": "#333",
     "colorSqPossible": "#40ff00",
-    "colorSqCastleable": "#5900b3"
+    "colorSqCastleable": "#5900b3",
+    "uiFontLarge": "bold 20px Raleway",
+    "uiFontSmall": "16px Raleway",
+    "uiFontBtn": "bold 15px Raleway"
 }
