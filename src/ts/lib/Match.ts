@@ -1,4 +1,4 @@
-import { CANVASMARGIN, FILE, PIECETYPE, SIDE, UIFONTLARGE, UIFONTSMALL, UIFONTBTN } from '../globals';
+import { FILE, PIECETYPE, SIDE } from '../globals';
 import { Board } from './Board';
 import { Cell } from './Cell';
 import { ChessAi } from './ChessAi';
@@ -149,14 +149,9 @@ export class Match {
     }
 
     reset() {
-        this.board = new Board(this.board.canvas, this.board.pieces_img);
-        this.team1 = new Team(SIDE.white);
-        this.team2 = new Team(SIDE.black);
-        this.turns = new Array();
-        this.checkmate = false;
-        
-        this.setupPieces(this.team1);
-        this.setupPieces(this.team2);
+        this.constructor(new Board(this.board.canvas, this.board.pieces_img),
+            new Team(SIDE.white),
+            new Team(SIDE.black));
         this.draw();
     }
 
