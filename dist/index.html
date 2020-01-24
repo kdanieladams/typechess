@@ -5,12 +5,19 @@
         <meta name="viewport" content="width=device-width, initial-scale=0.6" />
         <title>TypeChess - Production</title>
         <link rel="icon" href="./favicon.ico" type="image/x-icon" />
-    <link href="main.min.css?d796abbb243ff0024d41" rel="stylesheet"></head>
+    <link href="styles.min.css?79682c392d315a8558fd" rel="stylesheet"></head>
     <body>
         <h1>TypeChess</h1>
         <h3>Production</h3>
         <p>Simple chess engine written in TypeScript. For now, 
             there is no AI.  Both sides are human-controlled.</p>
-        <canvas id="chess_board" width="940" height="768"></canvas>
-    <script type="text/javascript" src="typechess.min.js?d796abbb243ff0024d41"></script></body>
+        <p>This is simply my way of figuring out chess for TypeScript, it's 
+            not intended to be redistributable.  If you want a library that is 
+            redistributable to build your own chess game, use the official 
+            <a href="https://chessboardjs.com/" target="_blank">Chessboard.js</a>.  
+            If you want to see what this thing can do because you're curious, 
+            poke away<span class='raleway'>.</span></p>
+        <canvas id="chess_board" width="680" height="830"></canvas>
+        <img id="pieces_img" src="./pieces.png" class="hidden">
+    <script type="text/javascript" src="typechess.min.js?79682c392d315a8558fd"></script></body>
 </html>

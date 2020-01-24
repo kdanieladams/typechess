@@ -1,7 +1,6 @@
 /**
  * Imports
  */
-@import url('https://fonts.googleapis.com/css?family=Source+Sans+Pro&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Raleway&display=swap');
 
 /**
@@ -66,10 +65,6 @@ p {
 
 .hidden {
     display: none;
-}
-
-.source-sans {
-    font-family: 'Source Sans Pro';
 }
 
 .raleway {

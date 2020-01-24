@@ -213,6 +213,9 @@ export class Match {
     }
 
     undoMove() {
+        if(this.turns.length == 0)
+            return;
+
         let latestTurn = this.turns[this.turns.length - 1];
         let piece = latestTurn.movedPiece;
         let capturedPiece = latestTurn.captures.length > 0 ? latestTurn.captures[latestTurn.captures.length - 1] : null;
