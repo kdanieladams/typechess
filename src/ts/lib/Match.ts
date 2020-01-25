@@ -68,7 +68,9 @@ export class Match {
                 if(activeTeam.activePiece.type == PIECETYPE.king) 
                 {
                     let king = activeTeam.activePiece as King;
-                    king.castleMove(cell, this.board);
+                    let latestTurn = this.turns[this.turns.length - 1];
+
+                    latestTurn.castleRookId = king.castleMove(cell, this.board);;
                 }
                 else {
                     activeTeam.activePiece.move(cell);
@@ -123,10 +125,11 @@ export class Match {
             this.updateStatus("It\'s " + nextTeam.getSide() + "\'s turn.");
         }
         else {
+            let capturedKing: King = nextTeam.getPieceById(15) as King;
             this.updateStatus("CHECKMATE!!! " + prevTeam.getSide() + " wins!");
-            prevTeam.captures.push(nextTeam.pieces[15]);
-            this.turns[this.turns.length - 1].captures.push(nextTeam.pieces[15]);
-            nextTeam.pieces[15].captured = true;
+            capturedKing.captured = true;
+            prevTeam.captures.push(capturedKing);
+            this.turns[this.turns.length - 1].capture = Object.assign({}, capturedKing);
         }
     }
 
@@ -210,7 +213,8 @@ export class Match {
                 turn = new Turn(piece, turnObj.endCoord);
                 piece.overrideCoord(startCoord);
                 turn.msgs = turnObj.msgs;
-                turn.captures = turnObj.captures;
+                turn.capture = turnObj.capture;
+                turn.castleRookId = turnObj.castleRookId;
                 this.turns.push(turn);
             });
         }
@@ -288,7 +292,7 @@ export class Match {
 
             moveTo.piece.captured = true;
             pieceCopy = Object.assign({}, moveTo.piece);
-            activeTurn.captures.push(pieceCopy);
+            activeTurn.capture = pieceCopy;
             activeTeam.captures.push(pieceCopy);
             this.updateStatus(msg2);
         }
@@ -300,7 +304,8 @@ export class Match {
 
         let latestTurn = this.turns[this.turns.length - 1];
         let piece = latestTurn.movedPiece;
-        let capturedPiece = latestTurn.captures.length > 0 ? latestTurn.captures[latestTurn.captures.length - 1] : null;
+        let capturedPiece = latestTurn.capture;
+        let team = latestTurn.side == SIDE.white ? this.getWhiteTeam() : this.getBlackTeam();
 
         // move the piece to it's previous position
         this.board.getCellByCoord(piece.getCoord()).piece = null;
@@ -319,8 +324,8 @@ export class Match {
 
         // replace any captured piece
         if(capturedPiece != null) {
-            let capTeam = capturedPiece.side == SIDE.white ? this.getWhiteTeam() : this.getBlackTeam();
-            let offTeam = capTeam == this.team1 ? this.team2 : this.team1;
+            let offTeam = team;
+            let capTeam = team.side == SIDE.white ? this.getBlackTeam() : this.getWhiteTeam();
             
             for(let i = 0; i < capTeam.pieces.length; i++) {
                 let capPieceInst = capTeam.pieces[i];
@@ -336,6 +341,19 @@ export class Match {
 
             // remove captured pieces from Team.captured
             offTeam.captures.pop();
+        }
+
+        // undo rook castle
+        if(latestTurn.castleRookId != null) {
+            let rook: Rook = team.getPieceById(latestTurn.castleRookId) as Rook,
+                rookFile = FILE[latestTurn.endCoord[1]] == FILE.c ? 'a' : 'h',
+                newCoord = rook.getCoord(),
+                rookRank = newCoord[1],
+                oldCoord = rookFile + rookRank;
+
+            rook.possibleMoves.push(oldCoord);
+            rook.move(this.board.getCellByCoord(oldCoord));
+            this.board.getCellByCoord(newCoord).piece = null;
         }
 
         // remove the action from the log

@@ -97,13 +97,18 @@ export class King extends Piece {
 
     castleMove(cell: Cell, board: Board){
         if(cell.castleable && !this.hasMoved) {
-            let rookFile = cell.file == FILE.c ? 'a' : 'h';
-            let rank = cell.rank;
-            let rookDest = (cell.file == FILE.c ? 'd' : 'f') + rank;
-            let rook = board.getCellByCoord(rookFile + rank).piece;
+            let rookFile = cell.file == FILE.c ? 'a' : 'h',
+                rank = cell.rank,
+                rookDest = (cell.file == FILE.c ? 'd' : 'f') + rank,
+                startCell = board.getCellByCoord(rookFile + rank),
+                rook = startCell.piece as Rook;
 
+            startCell.piece = null;
             rook.possibleMoves.push(rookDest);
             rook.move(board.getCellByCoord(rookDest));
+            this.move(cell);
+            
+            return rook.getId();
         }
 
         this.move(cell);
