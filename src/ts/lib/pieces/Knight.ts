@@ -1,6 +1,6 @@
 import { SIDE, PIECETYPE, FILE } from '../../globals';
-import { Piece } from './_Piece';
 import { Board } from '../Board';
+import { Piece } from './_Piece';
 
 /**
  * Knight

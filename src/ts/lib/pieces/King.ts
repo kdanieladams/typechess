@@ -1,8 +1,8 @@
 import { FILE, PIECETYPE, SIDE } from '../../globals';
 import { Board } from '../Board';
+import { Cell } from '../Cell';
 import { Piece } from './_Piece';
 import { Rook } from './Rook';
-import { Cell } from '../Cell';
 
 /**
  * King

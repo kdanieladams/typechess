@@ -1,11 +1,11 @@
 import { CAPITALIZE, SIDE } from '../globals';
-import { Piece } from './pieces/_Piece';
-import { Pawn } from './pieces/Pawn';
-import { Rook } from './pieces/Rook';
-import { Knight } from './pieces/Knight';
 import { Bishop } from './pieces/Bishop';
 import { King } from './pieces/King';
+import { Pawn } from './pieces/Pawn';
+import { Piece } from './pieces/_Piece';
+import { Knight } from './pieces/Knight';
 import { Queen } from './pieces/Queen';
+import { Rook } from './pieces/Rook';
 
 export class Team {
     side: number;

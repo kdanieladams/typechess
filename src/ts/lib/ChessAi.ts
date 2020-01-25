@@ -1,7 +1,7 @@
 import { Board } from './Board';
-import { Team } from './Team';
-import { Piece } from './pieces/_Piece';
 import { Cell } from './Cell';
+import { Piece } from './pieces/_Piece';
+import { Team } from './Team';
 
 export class ChessAi {
     board: Board;

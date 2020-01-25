@@ -2,16 +2,12 @@ import { FILE, PIECETYPE, SIDE } from '../globals';
 import { Board } from './Board';
 import { Cell } from './Cell';
 import { ChessAi } from './ChessAi';
+import { ChessUi } from './ui/ChessUi';
+import { King } from './pieces/King';
 import { Piece } from './pieces/_Piece';
+import { Rook } from './pieces/Rook';
 import { Team } from './Team';
 import { Turn } from './Turn';
-import { King } from './pieces/King';
-import { Rook } from './pieces/Rook';
-import { ChessUi } from './ui/ChessUi';
-import { Pawn } from './pieces/Pawn';
-import { Knight } from './pieces/Knight';
-import { Bishop } from './pieces/Bishop';
-import { Queen } from './pieces/Queen';
 
 /**
  * Match

@@ -1,6 +1,6 @@
 import { CANVASMARGIN, UIFONTLARGE, UIFONTSMALL, UIFONTBTN } from '../../globals';
-import { UiBtn } from './UiBtn';
 import { Turn } from '../Turn';
+import { UiBtn } from './UiBtn';
 
 export class ChessUi {
     private undoBtn: UiBtn;

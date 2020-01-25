@@ -1,6 +1,6 @@
 import { PIECETYPE, SIDE } from '../../globals';
-import { Piece } from './_Piece';
 import { Board } from '../Board';
+import { Piece } from './_Piece';
 
 /**
  * Bishop
