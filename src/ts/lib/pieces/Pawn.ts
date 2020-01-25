@@ -24,21 +24,21 @@ export class Pawn extends Piece {
     }
 
     canMove(board: Board) {
-        let file = this._cell.file;
-        let rank = this._cell.rank;
+        let file = this.getCoord()[0];
+        let rank = parseInt(this.getCoord()[1]);
 
         this.active = true;
         this.possibleMoves = [];
 
         // can always move forward 1 sq
-        let mv1sq = "" + this._cell.getFile() + (rank + this._forward);
+        let mv1sq = "" + file + (rank + this._forward);
         let cell1 = board.getCellByCoord(mv1sq);
         if(board.cellInBounds(mv1sq) && !cell1.isOccupied()) {
             this.possibleMoves.push(mv1sq);
         }
 
         // on first move, can move 2 sqs
-        let mv2sq = "" + this._cell.getFile() + (rank + this._forward + this._forward);
+        let mv2sq = "" + file + (rank + this._forward + this._forward);
         let cell2 = board.getCellByCoord(mv2sq);
         if(!this.hasMoved && board.cellInBounds(mv2sq)
             && !cell2.isOccupied() && !cell1.isOccupied())
@@ -48,7 +48,7 @@ export class Pawn extends Piece {
 
         // can only attack diagonally
         let oppSide = this.side == SIDE.white ? SIDE.black : SIDE.white;
-        let diagL = "" + FILE[file - 1] + (rank + this._forward);
+        let diagL = "" + FILE[(FILE[file] - 1)] + (rank + this._forward);
         if(board.cellInBounds(diagL)) {
             let cell = board.getCellByCoord(diagL);
             if(cell.isOccupied() && cell.piece.side == oppSide) {
@@ -56,7 +56,7 @@ export class Pawn extends Piece {
             }
         }
 
-        let diagR = "" + FILE[file + 1] + (rank + this._forward);
+        let diagR = "" + FILE[(FILE[file] + 1)] + (rank + this._forward);
         if(board.cellInBounds(diagR)) {
             let cell = board.getCellByCoord(diagR);
             if(cell.isOccupied() && cell.piece.side == oppSide) {

@@ -46,6 +46,7 @@ export class ChessAi {
                         checkMate = false;
                     }
 
+                    endCell.piece = null;
                     piece.possibleMoves = [startCell.getCoord()];
                     piece.move(startCell);
 

@@ -4,7 +4,8 @@ import { Cell } from '../Cell';
 
 export abstract class Piece {
     // protected
-    protected _cell: Cell = null;
+    // protected _cell: Cell = null;
+    protected _coord: string = '';
     protected _forward = 1;
 
     // public
@@ -68,10 +69,7 @@ export abstract class Piece {
     }
 
     getCoord() {
-        if(this._cell != null)
-            return this._cell.getCoord();
-
-        return "";
+        return this._coord;
     }
 
     getDiagMoves(board: Board, forward: boolean, right: boolean) {
@@ -101,11 +99,8 @@ export abstract class Piece {
     move(cell: Cell) {
         // check if I can be moved to this cell...
         if(cell instanceof Cell && this.possibleMoves.includes(cell.getCoord())) {
-            if(this._cell != null) 
-                this._cell.piece = null;
-            
-            this._cell = cell;
-            this._cell.piece = this;
+            this._coord = cell.getCoord();
+            cell.piece = this;
             this.possibleMoves = [];
 
             return true;

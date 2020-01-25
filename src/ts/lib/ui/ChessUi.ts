@@ -1,11 +1,11 @@
-import { CANVASMARGIN, UIFONTLARGE, UIFONTSMALL, UIFONTBTN } from '../globals';
+import { CANVASMARGIN, UIFONTLARGE, UIFONTSMALL, UIFONTBTN } from '../../globals';
 import { UiBtn } from './UiBtn';
-import { Turn } from './Turn';
+import { Turn } from '../Turn';
 
-export class Ui {
+export class ChessUi {
     private undoBtn: UiBtn;
     private resetBtn: UiBtn;
-    private tieBtn: UiBtn;
+    private loadBtn: UiBtn;
     private saveBtn: UiBtn;
 
     constructor() {
@@ -18,25 +18,33 @@ export class Ui {
             btnStart, '#900', '#fff');
         this.resetBtn = new UiBtn('↻ Reset', btnWidth, btnHeight, CANVASMARGIN, 
             btnStart + btnHeight + btnMargin);
-        this.tieBtn = new UiBtn('📁 Load', btnWidth, btnHeight, CANVASMARGIN + btnWidth + btnMargin, 
+        this.loadBtn = new UiBtn('📁 Load', btnWidth, btnHeight, CANVASMARGIN + btnWidth + btnMargin, 
             btnStart);
         this.saveBtn = new UiBtn('💾 Save', btnWidth, btnHeight, CANVASMARGIN + btnWidth + btnMargin, 
             btnStart + btnHeight + btnMargin, '#090', '#fff');
     }
 
-    private _clickedBtn(event, btn) {
+    private _clickedBtn(event: MouseEvent, btn: UiBtn) {
         return (event.offsetX >= btn.x 
             && event.offsetX <= btn.x + btn.width
             && event.offsetY >= btn.y
             && event.offsetY <= btn.y + btn.height);
     }
 
-    clickedUndoBtn(event) {
+    clickedUndoBtn(event: MouseEvent) {
         return this._clickedBtn(event, this.undoBtn);
     }
 
-    clickedResetBtn(event) {
+    clickedLoadBtn(event: MouseEvent) {
+        return this._clickedBtn(event, this.loadBtn);
+    }
+
+    clickedResetBtn(event: MouseEvent) {
         return this._clickedBtn(event, this.resetBtn);
+    }
+
+    clickedSaveBtn(event: MouseEvent) {
+        return this._clickedBtn(event, this.saveBtn);
     }
 
     draw(ctx: CanvasRenderingContext2D, whiteScore: number, blackScore: number, turns: Turn[]) {
@@ -96,7 +104,7 @@ export class Ui {
         ctx.closePath();
 
         // draw buttons
-        let btns: UiBtn[] = [this.undoBtn, this.resetBtn, this.tieBtn, this.saveBtn];
+        let btns: UiBtn[] = [this.undoBtn, this.resetBtn, this.loadBtn, this.saveBtn];
 
         btns.forEach(btn => {
             ctx.beginPath();

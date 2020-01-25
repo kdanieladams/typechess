@@ -22,8 +22,8 @@ export class King extends Piece {
     }
 
     canMove(board: Board) {
-        let file = this._cell.file;
-        let rank = this._cell.rank;
+        let file = this._coord[0];
+        let rank = parseInt(this._coord[1]);
         let testMoves = new Array();
 
         this.possibleMoves = [];
@@ -64,14 +64,14 @@ export class King extends Piece {
         }
 
         // can move 1sq in any direction
-        testMoves.push("" + FILE[file + 1] + rank);
-        testMoves.push("" + FILE[file - 1] + rank);
-        testMoves.push("" + FILE[file] + (rank + 1));
-        testMoves.push("" + FILE[file] + (rank - 1));
-        testMoves.push("" + FILE[file + 1] + (rank + 1));
-        testMoves.push("" + FILE[file - 1] + (rank - 1));
-        testMoves.push("" + FILE[file - 1] + (rank + 1));
-        testMoves.push("" + FILE[file + 1] + (rank - 1));
+        testMoves.push("" + FILE[FILE[file] + 1] + rank);
+        testMoves.push("" + FILE[FILE[file] - 1] + rank);
+        testMoves.push("" + file + (rank + 1));
+        testMoves.push("" + file + (rank - 1));
+        testMoves.push("" + FILE[FILE[file] + 1] + (rank + 1));
+        testMoves.push("" + FILE[FILE[file] - 1] + (rank - 1));
+        testMoves.push("" + FILE[FILE[file] - 1] + (rank + 1));
+        testMoves.push("" + FILE[FILE[file] + 1] + (rank - 1));
         
         for(let i = 0; i < testMoves.length; i++) {
             let testMove = testMoves[i];
