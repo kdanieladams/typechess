@@ -1,4 +1,6 @@
-import { CANVASMARGIN, CELLWIDTH, DARKSQCOLOR, FILE, NUMFILES, NUMRANKS, LIGHTSQCOLOR, POSSIBLESQCOLOR, CASTLEABLESQCOLOR } from '../globals';
+import { CANVASMARGIN, CELLWIDTH, DARKSQCOLOR, FILE, NUMFILES, 
+    NUMRANKS, LIGHTSQCOLOR, POSSIBLESQCOLOR, CASTLEABLESQCOLOR, 
+    UIFONTBTN } from '../globals';
 import { Cell } from './Cell';
 
 /**
@@ -89,6 +91,18 @@ export class Board {
             }
 
             this.ctx.fillRect(xPos, yPos, cellWidth, cellWidth);
+            this.ctx.closePath();
+
+            // draw axis labels
+            this.ctx.beginPath();
+            this.ctx.fillStyle = cell.isLight ? darkCol : lightCol;
+            this.ctx.font = UIFONTBTN;
+            if(cell.rank == 1) {
+                this.ctx.fillText(FILE[cell.file], (xPos + cellWidth - 10), (yPos + cellWidth - 5));
+            }
+            if(cell.file == FILE.a) {
+                this.ctx.fillText(cell.rank + '', xPos + 3, yPos + 15);
+            }
             this.ctx.closePath();
 
             // highlight possible moves
