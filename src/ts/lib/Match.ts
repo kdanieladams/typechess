@@ -353,6 +353,7 @@ export class Match {
 
             rook.possibleMoves.push(oldCoord);
             rook.move(this.board.getCellByCoord(oldCoord));
+            rook.hasMoved = false;
             this.board.getCellByCoord(newCoord).piece = null;
         }
 
