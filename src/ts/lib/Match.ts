@@ -163,11 +163,15 @@ export class Match {
         let saveGame = JSON.parse(window.localStorage.getItem("Typechess_Save"));
         let assignPieceProperties = (piece: Piece, i: number, teamObj: any) => {
             let pieceObj = teamObj.pieces[i];
+            let cell = this.board.getCellByCoord(piece.getCoord());
             
             piece.captured = pieceObj.captured;
-            this.board.getCellByCoord(piece.getCoord()).piece = null;
-            piece.possibleMoves = [pieceObj._coord];
-            piece.move(this.board.getCellByCoord(pieceObj._coord));
+            cell.piece = cell.piece == piece ? null : cell.piece;
+            
+            if(!piece.captured) {
+                piece.possibleMoves = [pieceObj._coord];
+                piece.move(this.board.getCellByCoord(pieceObj._coord));
+            }
         }
 
         if(!saveGame) {
@@ -203,11 +207,12 @@ export class Match {
             saveGame.turns.forEach(turnObj => {
                 let team = turnObj.side == SIDE.white ? this.getWhiteTeam() : this.getBlackTeam();
                 let piece = team.getPieceById(turnObj.movedPiece._id);
+                let startCoord = piece.getCoord();
                 let turn: Turn;
 
                 piece.overrideCoord(turnObj.startCoord);
                 turn = new Turn(piece, turnObj.endCoord);
-                piece.overrideCoord(turnObj.endCoord);
+                piece.overrideCoord(startCoord);
                 turn.msgs = turnObj.msgs;
                 turn.captures = turnObj.captures;
                 this.turns.push(turn);
@@ -324,9 +329,7 @@ export class Match {
             for(let i = 0; i < capTeam.pieces.length; i++) {
                 let capPieceInst = capTeam.pieces[i];
 
-                if(capPieceInst.captured 
-                    && capPieceInst.type == capturedPiece.type
-                    && capPieceInst.getCoord() == latestTurn.endCoord)
+                if(capPieceInst.captured && capPieceInst.getId() == capturedPiece._id)
                 {
                     capPieceInst.captured = false;
                     capPieceInst.possibleMoves = [latestTurn.endCoord];

@@ -7,7 +7,7 @@ import { Piece } from './pieces/_piece.js';
  * Half-turn or action of one team (white OR black).
  */
 export class Turn {
-    captures: Piece[] = new Array();
+    captures: any[] = new Array();
     endCoord: string = '';
     movedPiece: Piece = null;
     side: SIDE = null;
