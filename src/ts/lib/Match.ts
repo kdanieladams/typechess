@@ -165,13 +165,9 @@ export class Match {
             let pieceObj = teamObj.pieces[i];
             
             piece.captured = pieceObj.captured;
-            if(!piece.captured) {
-                piece.possibleMoves = [pieceObj._coord];
-                piece.move(this.board.getCellByCoord(pieceObj._coord));
-            }
-            else {
-                this.board.getCellByCoord(piece.getCoord()).piece = null;
-            }
+            this.board.getCellByCoord(piece.getCoord()).piece = null;
+            piece.possibleMoves = [pieceObj._coord];
+            piece.move(this.board.getCellByCoord(pieceObj._coord));
         }
 
         if(!saveGame) {
@@ -205,10 +201,15 @@ export class Match {
         // update turn collection
         if(saveGame.turns && saveGame.turns instanceof Array) {
             saveGame.turns.forEach(turnObj => {
-                let piece: any = Object.assign({}, turnObj.movedPiece);
-                piece.getCoord = () => { return piece._coord };
-                let turn: Turn = new Turn(piece as Piece, turnObj.endCoord);
+                let team = turnObj.side == SIDE.white ? this.getWhiteTeam() : this.getBlackTeam();
+                let piece = team.getPieceById(turnObj.movedPiece._id);
+                let turn: Turn;
+
+                piece.overrideCoord(turnObj.startCoord);
+                turn = new Turn(piece, turnObj.endCoord);
+                piece.overrideCoord(turnObj.endCoord);
                 turn.msgs = turnObj.msgs;
+                turn.captures = turnObj.captures;
                 this.turns.push(turn);
             });
         }
@@ -288,8 +289,6 @@ export class Match {
             pieceCopy = Object.assign({}, moveTo.piece);
             activeTurn.captures.push(pieceCopy);
             activeTeam.captures.push(pieceCopy);
-
-            // this.updateCaptures(activeTeam);
             this.updateStatus(msg2);
         }
     }
@@ -338,7 +337,6 @@ export class Match {
 
             // remove captured pieces from Team.captured
             offTeam.captures.pop();
-            // this.updateCaptures(offTeam);
         }
 
         // remove the action from the log

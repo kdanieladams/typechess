@@ -16,8 +16,8 @@ export class Pawn extends Piece {
     ];
     value = 100;
 
-    constructor(side: SIDE) {
-        super(side, PIECETYPE.pawn);
+    constructor(side: SIDE, id: number) {
+        super(side, PIECETYPE.pawn, id);
 
         // init possible starting locations
         this.possibleMoves = this.origCoord;

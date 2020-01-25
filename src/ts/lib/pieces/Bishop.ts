@@ -8,8 +8,8 @@ import { Board } from '../Board';
 export class Bishop extends Piece {
     value = 325;
 
-    constructor(side: SIDE) {
-        super(side, PIECETYPE.bishop);
+    constructor(side: SIDE, id: number) {
+        super(side, PIECETYPE.bishop, id);
 
         // init possible starting locations
         this.possibleMoves = [

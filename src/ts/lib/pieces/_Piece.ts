@@ -7,6 +7,7 @@ export abstract class Piece {
     // protected _cell: Cell = null;
     protected _coord: string = '';
     protected _forward = 1;
+    protected _id: number;
 
     // public
     active = false;
@@ -16,10 +17,11 @@ export abstract class Piece {
     type = PIECETYPE.pawn;
     value = 100;
 
-    constructor(side: SIDE, type: PIECETYPE) {
+    constructor(side: SIDE, type: PIECETYPE, id: number) {
         this.side = side;
         this.type = type;
         this._forward = this.side == SIDE.white ? 1 : -1; // -1 = down, 1 = up
+        this._id = id;
     }
 
     private _iterateMoves(board: Board, coord: string, incFile: number, incRank: number) {
@@ -79,6 +81,9 @@ export abstract class Piece {
 
         return this._iterateMoves(board, coord, incFile, incRank);
     }
+    getId() {
+        return this._id;
+    }
 
     getPerpMoves(board: Board, vertical: boolean, positive: boolean) {
         let coord = this.getCoord(), 
@@ -94,6 +99,10 @@ export abstract class Piece {
 
     getSide() {
         return CAPITALIZE(GETENUMKEY(SIDE, this.side));
+    }
+
+    overrideCoord(coord: string) {
+        this._coord = coord;
     }
 
     move(cell: Cell) {
