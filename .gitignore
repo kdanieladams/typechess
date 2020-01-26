@@ -1,2 +1,5 @@
 /node_modules
 /ts/*.js
+/dist/*.js
+/dist/*.css
+/dist/*.html
