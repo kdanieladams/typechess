@@ -38,6 +38,10 @@ export class ChessAi {
                         origPiece: Piece = endCell.piece,
                         kingCoord: string; 
                     
+                    if(endCell.isOccupied()) {
+                        origPiece.captured = true;
+                    }
+
                     piece.possibleMoves = [coord];
                     piece.move(endCell);
                     kingCoord = defTeam.pieces[15].getCoord();
@@ -51,6 +55,7 @@ export class ChessAi {
                     piece.move(startCell);
 
                     if(origPiece != null) {
+                        origPiece.captured = false;
                         endCell.piece = origPiece;
                     }
                 });
