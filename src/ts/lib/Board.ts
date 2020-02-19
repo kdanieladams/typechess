@@ -23,7 +23,7 @@ export class Board {
         let boardWidth = NUMFILES * CELLWIDTH,
             boardHeight = NUMRANKS * CELLWIDTH;
         this._canvas_offset_x = (canvas.width - boardWidth) / 2;
-        this._canvas_offset_y = CANVASMARGIN + 150;
+        this._canvas_offset_y = CANVASMARGIN; // + 150;
 
         for(let row = 0; row < NUMRANKS; row++) {
             for(let col = 0; col < NUMFILES; col++) {

@@ -106,10 +106,12 @@ export class Match {
 
     draw() {
         this.board.draw();
+        /*
         this.ui.draw(this.board.ctx, 
             this.getWhiteTeam().getScore(), 
             this.getBlackTeam().getScore(),
             this.turns);
+        */
     }
 
     finishTurn() {
