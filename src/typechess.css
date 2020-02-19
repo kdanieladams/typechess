@@ -1,0 +1,106 @@
+/**
+ * Styles specific to the app.
+ */
+#chess_board {
+    display: block;
+    margin: 10px auto;
+    border: solid 1px #999;
+}
+
+#chess_ui {
+    display: grid;
+    width: 680px;
+    margin: 0 auto;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: 50px auto;
+    grid-template-areas: 
+        "header header btns"
+        "score msgs btns";
+    grid-gap: 5px;
+}
+
+#chess_ui aside {
+    grid-area: btns;
+    /* background-color: green; */
+}
+
+#chess_ui aside button {
+    display: block;
+    width: 100%;
+    margin: 0 0 15px;
+    background-color: #333;
+    color: #919191;
+    border: solid 1px #555;
+    padding: 5px;
+    border-radius: 7px;
+}
+
+#chess_ui aside button:last-child {
+    margin-bottom: 0;
+}
+
+#chess_ui aside button.success {
+    background-color: green;
+    color: white;
+}
+
+#chess_ui aside button.danger {
+    background-color: red;
+    color: white;
+}
+
+#chess_ui header {
+    grid-area: header;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    grid-gap: 5px;
+    /* background-color: #222; */
+}
+
+#chess_ui header h4 {
+    margin: 0;
+    padding-top: 15px;
+    text-align: center;
+    background-color: #222;
+}
+
+#chess_ui div.score {
+    grid-area: score;
+    /* background-color: blue; */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    align-items: center;
+}
+
+#chess_ui div.score span {
+    padding: 10px 0;
+}
+
+#chess_ui div.score .score-hdr {
+    display: block;
+    text-align: right;
+}
+
+#chess_ui div.score .white {
+    background-color: white;
+    color: #444;
+}
+
+#chess_ui div.score .black {
+    background-color: #000;
+    color: #ececec;
+}
+
+#chess_ui div.msgs {
+    grid-area: msgs;
+    /* background-color: red; */
+    border: solid 1px #ccc;
+    padding: 5px;
+    text-align: center;
+    overflow-y: scroll;
+}
+
+#pieces_img {
+    display: none;
+}

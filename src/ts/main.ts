@@ -1,4 +1,5 @@
 import '../styles.css';
+import '../typechess.css';
 import * as config from './config.json';
 
 import { SIDE } from './globals';

@@ -7,17 +7,38 @@
         <link rel="icon" href="./favicon.ico" type="image/x-icon" />
     </head>
     <body>
-        <h1><%= htmlWebpackPlugin.options.title %></h1>
-        <h3><%= htmlWebpackPlugin.options.version %></h3>
-        <p>Simple chess engine written in TypeScript. For now, 
-            there is no AI.  Both sides are human-controlled.</p>
-        <p>This is simply my way of figuring out chess for TypeScript, it's 
-            not intended to be redistributable.  If you want a library that is 
-            redistributable to build your own chess game, use the official 
-            <a href="https://chessboardjs.com/" target="_blank">Chessboard.js</a>.  
-            If you want to see what this thing can do because you're curious, 
-            poke away<span class='raleway'>.</span></p>
-        <canvas id="chess_board" width="680" height="680"></canvas>
+        <div class="container">
+            <h1><%= htmlWebpackPlugin.options.title %></h1>
+            <h3><%= htmlWebpackPlugin.options.version %></h3>
+            <p>Simple chess engine written in TypeScript. For now, 
+                there is no AI.  Both sides are human-controlled.</p>
+            <p>This is simply my way of figuring out chess for TypeScript, it's 
+                not intended to be redistributable.  If you want a library that is 
+                redistributable to build your own chess game, use the official 
+                <a href="https://chessboardjs.com/" target="_blank">Chessboard.js</a>.  
+                If you want to see what this thing can do because you're curious, 
+                poke away<span class='raleway'>.</span></p>
+            <div id="chess_ui">
+                <header>
+                    <h4>Scoring</h4>
+                    <h4>Game Log</h4>
+                </header>
+                <div class="score">
+                    <span class="score-hdr white">White:</span>
+                    <span id="score_white" class="white">500</span>
+                    <span class="score-hdr black">Black:</span>
+                    <span id="score_black" class="black">150</span>
+                </div>
+                <div class="msgs">Log messages go here...</div>
+                <aside>
+                    <button class="success">💾 Save</button>
+                    <button>📁 Load</button>
+                    <button class="danger">↻ Reset</button>
+                    <button>↶ Undo</button>
+                </aside>
+            </div>
+            <canvas id="chess_board" width="680" height="680"></canvas>
+        </div>
         <img id="pieces_img" src="./pieces.png" class="hidden">
     </body>
 </html>

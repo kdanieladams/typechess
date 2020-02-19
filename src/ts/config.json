@@ -1,13 +1,16 @@
 {
     "canvasId": "chess_board",
-    "piecesImgId": "pieces_img",
     "canvasMargin": 20,
     "cellWidth": 80,
+    
+    "piecesImgId": "pieces_img",
     "spriteWidth": 100,
+    
     "colorSqLight": "#919191",
     "colorSqDark": "#333",
     "colorSqPossible": "#40ff00",
     "colorSqCastleable": "#5900b3",
+    
     "uiFontLarge": "bold 20px Raleway",
     "uiFontSmall": "16px Raleway",
     "uiFontBtn": "bold 15px Raleway"

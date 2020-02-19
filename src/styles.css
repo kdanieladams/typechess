@@ -1,10 +1,7 @@
-/**
- * Imports
- */
-@import url('https://fonts.googleapis.com/css?family=Raleway&display=swap');
+/* @import url('https://fonts.googleapis.com/css?family=Raleway&display=swap'); */
 
 /**
- * HTML Elements
+ * Styles for the demo page.
  */
 a:link, a:visited, a:active {
     color: #900;
@@ -21,39 +18,16 @@ a:hover {
     font-family: sans-serif;
 }
 
-button {
-    background-color: #333;
-    color: #919191;
-    margin: 5px;
-    border: solid 1px #555;
-    padding: 5px;
-    border-radius: 5px;
-}
-
-button:active {
-    background-color: #121212;
-}
-
-button > span.symbol {
-    font-size: 28px;
-    vertical-align: middle;
-    line-height: 0;
-}
-
 h1, h2, h3 {
     text-align: center;
 }
 
 p {
-    max-width: 940px;
     margin: 10px auto;
     line-height: 1.5em;
     text-align: justify;
 }
 
-/**
- * Classes
- */
 .center {
     text-align: center;
 }
@@ -63,23 +37,16 @@ p {
     font-family: Courier;
 }
 
+.container {
+    display: block;
+    max-width: 940px;
+    margin: 0 auto;
+}
+
 .hidden {
     display: none;
 }
 
 .raleway {
     font-family: 'Raleway';
-}
-
-/**
- * IDs
- */
-#chess_board {
-    display: block;
-    margin: 10px auto;
-    border: solid 1px #999;
-}
-
-#pieces_img {
-    display: none;
 }
