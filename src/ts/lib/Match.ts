@@ -2,7 +2,7 @@ import { FILE, PIECETYPE, SIDE } from '../globals';
 import { Board } from './Board';
 import { Cell } from './Cell';
 import { ChessAi } from './ChessAi';
-import { ChessUiHtml } from './ui/ChessUiHtml';
+import { ChessUi } from './ui/ChessUi';
 import { King } from './pieces/King';
 import { Piece } from './pieces/_Piece';
 import { Rook } from './pieces/Rook';
@@ -14,7 +14,7 @@ import { Turn } from './Turn';
  */
 export class Match {
     ai: ChessAi;
-    ui: ChessUiHtml;
+    ui: ChessUi;
     board: Board;
     checkmate: boolean = false;
     team1: Team;
@@ -31,7 +31,7 @@ export class Match {
         this.setupPieces(this.team2);
         
         this.ai = new ChessAi(this.board);
-        this.ui = new ChessUiHtml(ui_div);
+        this.ui = new ChessUi(ui_div);
         
         this.ui.callback_load = (e) => { return this.load(); };
         this.ui.callback_reset = (e) => { return this.reset(); };

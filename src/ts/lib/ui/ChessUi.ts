@@ -1,121 +1,136 @@
-import { CANVASMARGIN, UIFONTLARGE, UIFONTSMALL, UIFONTBTN } from '../../globals';
+import { CANVASMARGIN, CANVASWIDTH } from '../../globals';
 import { Turn } from '../Turn';
-import { UiBtn } from './UiBtn';
+
 
 export class ChessUi {
-    private undoBtn: UiBtn;
-    private resetBtn: UiBtn;
-    private loadBtn: UiBtn;
-    private saveBtn: UiBtn;
+    private _initialized: boolean = false;
+    private _msgs_div: HTMLDivElement;
+    private _score_white: HTMLSpanElement;
+    private _score_black: HTMLSpanElement;
+    private _ui_div: HTMLDivElement;
 
-    constructor() {
-        let btnWidth = 91, 
-            btnHeight = 32,
-            btnStart = 94,
-            btnMargin = 3;
+    callback_save = null;
+    callback_load = null;
+    callback_reset = null;
+    callback_undo = null;
 
-        this.undoBtn = new UiBtn('↶ Undo', btnWidth, btnHeight, CANVASMARGIN, 
-            btnStart, '#900', '#fff');
-        this.resetBtn = new UiBtn('↻ Reset', btnWidth, btnHeight, CANVASMARGIN, 
-            btnStart + btnHeight + btnMargin);
-        this.loadBtn = new UiBtn('📁 Load', btnWidth, btnHeight, CANVASMARGIN + btnWidth + btnMargin, 
-            btnStart);
-        this.saveBtn = new UiBtn('💾 Save', btnWidth, btnHeight, CANVASMARGIN + btnWidth + btnMargin, 
-            btnStart + btnHeight + btnMargin, '#090', '#fff');
+    constructor(ui_div: HTMLDivElement) {
+        this._ui_div = ui_div;
+        this._ui_div.innerHTML = "";
+        this._ui_div.style.width = CANVASWIDTH + "px";
     }
 
-    private _clickedBtn(event: MouseEvent, btn: UiBtn) {
-        return (event.offsetX >= btn.x 
-            && event.offsetX <= btn.x + btn.width
-            && event.offsetY >= btn.y
-            && event.offsetY <= btn.y + btn.height);
+    private _add_btns() {
+        let aside = document.createElement("aside"),
+            saveBtn = document.createElement("button"),
+            loadBtn = document.createElement("button"),
+            resetBtn = document.createElement("button"),
+            undoBtn = document.createElement("button");
+
+        saveBtn.classList.add("success");
+        resetBtn.classList.add("danger");
+
+        saveBtn.innerHTML = "💾 Save";
+        loadBtn.innerHTML = "📁 Load";
+        resetBtn.innerHTML = "↻ Reset";
+        undoBtn.innerHTML = "↶ Undo";
+
+        saveBtn.onclick = typeof(this.callback_save) == 'function' ? this.callback_save : this._handle_click;
+        loadBtn.onclick = typeof(this.callback_load) == 'function' ? this.callback_load : this._handle_click;
+        resetBtn.onclick = typeof(this.callback_reset) == 'function' ? this.callback_reset : this._handle_click;
+        undoBtn.onclick = typeof(this.callback_undo) == 'function' ? this.callback_undo : this._handle_click;
+
+        aside.append(saveBtn, loadBtn, resetBtn, undoBtn);
+        this._ui_div.appendChild(aside);
     }
 
-    clickedUndoBtn(event: MouseEvent) {
-        return this._clickedBtn(event, this.undoBtn);
-    }
+    private _add_header() {
+        let header = document.createElement("header"),
+            score_h4 = document.createElement("h4"),
+            msgs_h4 = document.createElement("h4");
 
-    clickedLoadBtn(event: MouseEvent) {
-        return this._clickedBtn(event, this.loadBtn);
-    }
-
-    clickedResetBtn(event: MouseEvent) {
-        return this._clickedBtn(event, this.resetBtn);
-    }
-
-    clickedSaveBtn(event: MouseEvent) {
-        return this._clickedBtn(event, this.saveBtn);
-    }
-
-    draw(ctx: CanvasRenderingContext2D, whiteScore: number, blackScore: number, turns: Turn[]) {
-        // 170px by 640px = total UI area
-        let score_x = 0 + CANVASMARGIN, 
-            score_y = 15 + CANVASMARGIN,
-            score_width = 200,
-            status_x = score_width + CANVASMARGIN, 
-            status_y = 15 + CANVASMARGIN,
-            ui_height = 170;
-
-        // draw the score
-        let scoreTxt = ['Score:',
-            'White: ' + whiteScore,
-            'Black: ' + blackScore
-        ];
-        let lineHeight = 25;
+        score_h4.innerHTML = "Score";
+        msgs_h4.innerHTML = "Game Log";
         
-        ctx.beginPath();
-        ctx.fillStyle = 'white';
-        ctx.font = UIFONTLARGE;
-        scoreTxt.forEach((str, i) => {
-            if(i > 0) ctx.font = UIFONTSMALL;
-            if(i > 1) lineHeight = 23;
-            ctx.fillText(str, score_x, score_y + (i * lineHeight), score_width);
-        });
-        ctx.closePath();
+        header.append(score_h4, msgs_h4);
+        this._ui_div.appendChild(header);
+    }
 
-        // draw the last five status messages
-        let statusMsgs: string[] = new Array();
-        lineHeight = 25;
+    private _add_msgs() {
+        let msgs = document.createElement("div");
 
-        for(let i = 0; i < 5; i++) {
-            let turn: Turn = turns[turns.length - 1 - i];
-            if(turn != undefined) {
-                for(let j = 0; j < turn.msgs.length; j++) {
-                    let msg = turn.msgs[turn.msgs.length - j - 1];
-                    statusMsgs.push(msg);
-                }
-            }
-            if(i == 4) {
-                while(statusMsgs.length > 5){
-                    statusMsgs.pop();
-                }
-            }
+        msgs.classList.add("msgs");
+        msgs.innerHTML = "Loading...";
+
+        this._ui_div.appendChild(msgs);
+        this._msgs_div = msgs;
+    }
+
+    private _add_score() {
+        let score = document.createElement("div"),
+            white_hdr = document.createElement("span"),
+            white_score = document.createElement("span"),
+            black_hdr = document.createElement("span"),
+            black_score = document.createElement("span");
+
+        white_hdr.classList.add("score-hdr", "white");
+        white_score.classList.add("white");
+        white_score.id = "score_white";
+
+        black_hdr.classList.add("score-hdr", "black");
+        black_score.classList.add("black");
+        black_score.id = "score_black";
+        
+        white_hdr.innerHTML = "White:";
+        white_score.innerHTML = "0";
+        black_hdr.innerHTML = "Black:";
+        black_score.innerHTML = "0";
+
+        score.classList.add("score");
+        score.appendChild(white_hdr);
+        score.appendChild(white_score);
+        score.appendChild(black_hdr);
+        score.appendChild(black_score);
+
+        this._ui_div.appendChild(score);
+        this._score_black = black_score;
+        this._score_white = white_score;
+    }
+
+    _handle_click(event) {
+        console.error("Click not implemented for " + event.target.innerHTML);
+        return false;
+    }
+
+    draw(white_score: number, black_score: number, turns: Turn[]) {
+        if(!this._initialized) {
+            this._add_header();
+            this._add_score();
+            this._add_msgs();
+            this._add_btns();
+            this._initialized = true;
         }
 
-        ctx.beginPath();
-        ctx.fillStyle = 'white';
-        ctx.font = UIFONTLARGE;
-        ctx.fillText('Game Log:', status_x, status_y);
-        ctx.font = UIFONTSMALL;
-        statusMsgs.forEach((msg, i) => {
-            if(i > 0) ctx.fillStyle = '#999';
-            ctx.fillText(msg, status_x, status_y + ((i + 1) * lineHeight));
-        });
-        ctx.closePath();
+        // update score
+        this._score_black.innerHTML = black_score.toString();
+        this._score_white.innerHTML = white_score.toString();
 
-        // draw buttons
-        let btns: UiBtn[] = [this.undoBtn, this.resetBtn, this.loadBtn, this.saveBtn];
+        // update msgs
+        this._msgs_div.innerHTML = "";
+        for(let i = 0; i < turns.length; i++) {
+            let turn = turns[turns.length - 1 - i];
+            for(let j = 0; j < turn.msgs.length; j++) {
+                let msg = turn.msgs[turn.msgs.length - 1 - j],
+                    msg_div = document.createElement("div");
+                
+                msg_div.innerHTML = msg;
+                this._msgs_div.appendChild(msg_div);
+            }
+        }
+        this._msgs_div.innerHTML += "<div>It's White's turn.</div>";
+    }
 
-        btns.forEach(btn => {
-            ctx.beginPath();
-            ctx.fillStyle = btn.bgColor;
-            ctx.fillRect(btn.x, btn.y, btn.width, btn.height);
-            ctx.fillStyle = btn.textColor;
-            ctx.font = UIFONTBTN;
-            ctx.textAlign = 'center';
-            ctx.fillText(btn.title, btn.x + (btn.width / 2), btn.y + 22);
-            ctx.closePath();
-            ctx.textAlign = 'left';
-        });
+    getUiDiv(): HTMLDivElement {
+        return this._ui_div;
     }
 }
