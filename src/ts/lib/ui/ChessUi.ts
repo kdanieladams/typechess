@@ -5,7 +5,9 @@ import { Turn } from '../Turn';
 export class ChessUi {
     private _initialized: boolean = false;
     private _msgs_div: HTMLDivElement;
+    private _score_hdr_white: HTMLSpanElement;
     private _score_white: HTMLSpanElement;
+    private _score_hdr_black: HTMLSpanElement;
     private _score_black: HTMLSpanElement;
     private _ui_div: HTMLDivElement;
 
@@ -73,8 +75,8 @@ export class ChessUi {
             black_hdr = document.createElement("span"),
             black_score = document.createElement("span");
 
-        white_hdr.classList.add("score-hdr", "white");
-        white_score.classList.add("white");
+        white_hdr.classList.add("score-hdr", "white", "active");
+        white_score.classList.add("white", "active");
         white_score.id = "score_white";
 
         black_hdr.classList.add("score-hdr", "black");
@@ -94,10 +96,12 @@ export class ChessUi {
 
         this._ui_div.appendChild(score);
         this._score_black = black_score;
+        this._score_hdr_black = black_hdr;
         this._score_white = white_score;
+        this._score_hdr_white = white_hdr;
     }
 
-    _handle_click(event) {
+    private _handle_click(event) {
         console.error("Click not implemented for " + event.target.innerHTML);
         return false;
     }
@@ -115,6 +119,20 @@ export class ChessUi {
         this._score_black.innerHTML = black_score.toString();
         this._score_white.innerHTML = white_score.toString();
 
+        // highlight active team
+        if(turns.length % 2) {
+            this._score_hdr_white.classList.remove("active");
+            this._score_white.classList.remove("active");
+            this._score_hdr_black.classList.add("active");
+            this._score_black.classList.add("active");
+        }
+        else {
+            this._score_hdr_black.classList.remove("active");
+            this._score_black.classList.remove("active");
+            this._score_hdr_white.classList.add("active");
+            this._score_white.classList.add("active");
+        }
+
         // update msgs
         this._msgs_div.innerHTML = "";
         for(let i = 0; i < turns.length; i++) {
@@ -127,7 +145,6 @@ export class ChessUi {
                 this._msgs_div.appendChild(msg_div);
             }
         }
-        this._msgs_div.innerHTML += "<div>It's White's turn.</div>";
     }
 
     getUiDiv(): HTMLDivElement {

@@ -109,6 +109,18 @@
     text-align: right;
 }
 
+#chess_ui div.score .score-hdr.white.active,
+#chess_ui div.score .score-hdr.black.active {
+    border: solid 3px #0c0;
+    border-right: none;
+}
+
+#chess_ui div.score .white.active,
+#chess_ui div.score .black.active {
+    border: solid 3px #0c0;
+    border-left: none;
+}
+
 #chess_ui div.score .white {
     background-color: white;
     color: #444;
@@ -124,7 +136,7 @@
  * Messages
  */
 #chess_ui div.msgs {
-    /* background-color: red; */
+    background-color: #121212;
     border: solid 1px #ccc;
     font-size: 14px;
     grid-area: msgs;

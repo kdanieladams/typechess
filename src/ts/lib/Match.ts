@@ -103,13 +103,10 @@ export class Match {
 
         if(this.isTeamInCheck(prevTeam))
             this.checkmate = this.ai.detectCheckMate(prevTeam, nextTeam);
-        if(this.isTeamInCheck(nextTeam) && !this.checkmate)
+        else if(this.isTeamInCheck(nextTeam) && !this.checkmate)
             this.checkmate = this.ai.detectCheckMate(nextTeam, prevTeam);
 
-        if(!this.checkmate) {
-            this.updateStatus("It\'s " + nextTeam.getSide() + "\'s turn.");
-        }
-        else {
+        if(this.checkmate) {
             let capturedKing: King = nextTeam.getPieceById(15) as King;
             this.updateStatus("CHECKMATE!!! " + prevTeam.getSide() + " wins!");
             capturedKing.captured = true;
