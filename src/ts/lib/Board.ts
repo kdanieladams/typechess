@@ -1,4 +1,4 @@
-import { CANVASMARGIN, CELLWIDTH, DARKSQCOLOR, FILE, NUMFILES, 
+import { CANVASMARGIN, CANVASWIDTH, CELLWIDTH, DARKSQCOLOR, FILE, NUMFILES, 
     NUMRANKS, LIGHTSQCOLOR, POSSIBLESQCOLOR, CASTLEABLESQCOLOR, 
     UIFONTBTN } from '../globals';
 import { Cell } from './Cell';
@@ -17,8 +17,10 @@ export class Board {
 
     constructor(canvas: HTMLCanvasElement, pieces_img: HTMLImageElement) {
         this.canvas = canvas;
-        this.pieces_img = pieces_img;
+        this.canvas.width = CANVASWIDTH;
+        this.canvas.height = CANVASWIDTH;
         this.ctx = canvas.getContext('2d');
+        this.pieces_img = pieces_img;
 
         let boardWidth = NUMFILES * CELLWIDTH,
             boardHeight = NUMRANKS * CELLWIDTH;

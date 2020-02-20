@@ -1,4 +1,4 @@
-import { CANVASMARGIN } from '../../globals';
+import { CANVASMARGIN, CANVASWIDTH } from '../../globals';
 import { Turn } from '../Turn';
 
 
@@ -17,6 +17,7 @@ export class ChessUiHtml {
     constructor(ui_div: HTMLDivElement) {
         this._ui_div = ui_div;
         this._ui_div.innerHTML = "";
+        this._ui_div.style.width = CANVASWIDTH + "px";
     }
 
     private _add_btns() {
@@ -126,6 +127,7 @@ export class ChessUiHtml {
                 this._msgs_div.appendChild(msg_div);
             }
         }
+        this._msgs_div.innerHTML += "<div>It's White's turn.</div>";
     }
 
     getUiDiv(): HTMLDivElement {

@@ -1,5 +1,6 @@
 {
     "canvasId": "chess_board",
+    "canvasWidth": 680,
     "canvasMargin": 20,
     "cellWidth": 80,
     

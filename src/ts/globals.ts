@@ -47,6 +47,7 @@ export const NUMRANKS           = 8;
 export const NUMFILES           = Object.keys(FILE).length / 2;
 export const CELLWIDTH          = config.cellWidth;
 export const PIECESPRITEWIDTH   = config.spriteWidth;
+export const CANVASWIDTH        = config.canvasWidth;
 export const CANVASMARGIN       = config.canvasMargin;
 
 

@@ -2,7 +2,6 @@ import { FILE, PIECETYPE, SIDE } from '../globals';
 import { Board } from './Board';
 import { Cell } from './Cell';
 import { ChessAi } from './ChessAi';
-import { ChessUi } from './ui/ChessUi';
 import { ChessUiHtml } from './ui/ChessUiHtml';
 import { King } from './pieces/King';
 import { Piece } from './pieces/_Piece';
@@ -218,12 +217,14 @@ export class Match {
         let currDate = new Date(),
             saveName = "Typechess_Save";
 
-        window.localStorage.setItem(saveName, JSON.stringify({
-            "team1" : this.team1,
-            "team2" : this.team2,
-            "turns" : this.turns
-        }));
-        alert("Game saved!");
+        if(confirm("Are you sure you want to save the current game?")) {
+            window.localStorage.setItem(saveName, JSON.stringify({
+                "team1" : this.team1,
+                "team2" : this.team2,
+                "turns" : this.turns
+            }));
+            alert("Game saved!");
+        }
     }
 
     setupPieces(team: Team) {
