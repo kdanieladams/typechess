@@ -1,5 +1,5 @@
 Typechess Automated Testing 
-Wed 02/19/2020 22:51:09.72 
+Wed 02/19/2020 23:01:18.11 
 
 
   Test Board
@@ -25,7 +25,7 @@ Wed 02/19/2020 22:51:09.72
       √ should return true if the cell is assigned a piece
       √ should return false if the cell is not assigned a piece
 
-  Test ChessUiHtml
+  Test ChessUi
     √ should be constructable
     getUiDiv()
       √ should provide it's bound ui_div element

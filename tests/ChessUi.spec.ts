@@ -1,20 +1,20 @@
 import 'mocha';
 import { expect } from 'chai';
-import { ChessUiHtmlFactory } from './factories';
-import { ChessUiHtml } from '../src/ts/lib/ui/ChessUiHtml';
+import { ChessUiFactory } from './factories';
+import { ChessUi } from '../src/ts/lib/ui/ChessUi';
 
 /**
  * ChessUiHtml Tests
  */
-describe('Test ChessUiHtml', () => {
-    let ui: ChessUiHtml;
+describe('Test ChessUi', () => {
+    let ui: ChessUi;
 
     before(() => {
-        ui = ChessUiHtmlFactory();
+        ui = ChessUiFactory();
     });
 
     it('should be constructable', () => {
-        expect(ui).to.be.instanceOf(ChessUiHtml);
+        expect(ui).to.be.instanceOf(ChessUi);
     });
 
     describe('getUiDiv()', () => {

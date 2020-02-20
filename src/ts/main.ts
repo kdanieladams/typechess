@@ -1,5 +1,5 @@
-import '../styles.css';
-import '../typechess.css';
+import '../css/styles.css';
+import '../css/typechess.css';
 import * as config from './config.json';
 import { Match } from './lib/Match';
 

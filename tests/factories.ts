@@ -41,9 +41,9 @@ export const CellFactory = function(params?: any) {
 };
 
 /**
- * ChessUiHtml Factory
+ * ChessUi Factory
  */
-export const ChessUiHtmlFactory = function(params?: any) {
+export const ChessUiFactory = function(params?: any) {
     const jsdom = require('jsdom');
     const { JSDOM } = jsdom;
     let dom = new JSDOM(`<!DOCTYPE html><div id="chess_ui"></div>`),
