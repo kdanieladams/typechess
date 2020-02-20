@@ -1,7 +1,7 @@
 import '../css/styles.css';
 import '../css/typechess.css';
 import * as config from './config.json';
-import { Match } from './lib/Match';
+import { Typechess } from './lib/Typechess';
 
 /**
  * Start
@@ -12,7 +12,7 @@ window.addEventListener('load', (load_event) => {
         pieces = document.getElementById(config.piecesImgId) as HTMLImageElement,
         ui_div = document.getElementById(config.uiId) as HTMLDivElement;
         
-    match = new Match(canvas, pieces, ui_div);
+    match = new Typechess(canvas, pieces, ui_div);
     match.draw();
 
     canvas.addEventListener('click', (event) => {
