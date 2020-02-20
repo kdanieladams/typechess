@@ -1,0 +1,150 @@
+/**
+ * Typechess.css
+ * -------------
+ * Styles specific to the app.
+ */
+#chess_board {
+    display: block;
+    margin: 10px auto;
+    border: solid 1px #999;
+}
+
+#chess_ui {
+    display: grid;
+    margin: 0 auto;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-template-rows: 50px auto;
+    grid-template-areas: 
+        "header header btns"
+        "score msgs btns";
+    grid-gap: 5px;
+}
+
+
+/**
+ * Button Aside
+ */
+#chess_ui aside {
+    grid-area: btns;
+    /* background-color: green; */
+}
+
+#chess_ui aside button {
+    display: block;
+    width: 100%;
+    margin: 0 0 15px;
+    background-color: #333;
+    color: #919191;
+    border: solid 1px #555;
+    padding: 5px;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+#chess_ui aside button:active {
+    /* filter: brightness(50%); */
+    background-color: #222;
+}
+
+#chess_ui aside button:last-child {
+    margin-bottom: 0;
+}
+
+#chess_ui aside button.success {
+    background-color: #090;
+    color: white;
+}
+
+#chess_ui aside button.success:active {
+    background-color: #040;
+}
+
+#chess_ui aside button.danger {
+    background-color: #c00;
+    color: white;
+}
+
+#chess_ui aside button.danger:active {
+    background-color: #700;
+}
+
+
+/**
+ * Header
+ */
+#chess_ui header {
+    grid-area: header;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    grid-gap: 5px;
+    /* background-color: #222; */
+}
+
+#chess_ui header h4 {
+    margin: 0;
+    padding-top: 15px;
+    text-align: center;
+    background-color: #222;
+}
+
+
+/**
+ * Score
+ */
+#chess_ui div.score {
+    grid-area: score;
+    /* background-color: blue; */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    align-items: center;
+}
+
+#chess_ui div.score span {
+    padding: 10px 0;
+}
+
+#chess_ui div.score .score-hdr {
+    display: block;
+    text-align: right;
+}
+
+#chess_ui div.score .white {
+    background-color: white;
+    color: #444;
+}
+
+#chess_ui div.score .black {
+    background-color: #000;
+    color: #ececec;
+}
+
+
+/**
+ * Messages
+ */
+#chess_ui div.msgs {
+    /* background-color: red; */
+    border: solid 1px #ccc;
+    font-size: 14px;
+    grid-area: msgs;
+    height: 90px;
+    overflow-y: scroll;
+    padding: 5px;
+    text-align: center;
+}
+
+#chess_ui div.msgs div {
+    margin: 0 0 5px;
+}
+
+#chess_ui div.msgs div:first-child {
+    color: white;
+}
+
+/**
+ * Miscellaneous
+ */
+#pieces_img {
+    display: none;
+}

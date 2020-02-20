@@ -1,7 +1,9 @@
 import { FILE, NUMRANKS, SIDE } from '../src/ts/globals';
 import { Board } from '../src/ts/lib/Board';
 import { Cell } from '../src/ts/lib/Cell';
+import { ChessUiHtml } from '../src/ts/lib/ui/ChessUiHtml';
 import { Pawn } from '../src/ts/lib/pieces/Pawn';
+
 
 /**
  * Board Factory
@@ -36,6 +38,18 @@ export const CellFactory = function(params?: any) {
     }
 
     return cell;
+};
+
+/**
+ * ChessUiHtml Factory
+ */
+export const ChessUiHtmlFactory = function(params?: any) {
+    const jsdom = require('jsdom');
+    const { JSDOM } = jsdom;
+    let dom = new JSDOM(`<!DOCTYPE html><div id="chess_ui"></div>`),
+        document = dom.window.document;
+
+    return new ChessUiHtml(document.getElementById('chess_ui'));
 };
 
 /**
