@@ -131,8 +131,16 @@
     padding: 5px;
     text-align: center;
     overflow-y: scroll;
+    height: 90px;
 }
 
+#chess_ui div.msgs div {
+    margin: 0 0 5px;
+}
+
+#chess_ui div.msgs div:first-child {
+    color: white;
+}
 
 /**
  * Miscellaneous

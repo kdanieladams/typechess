@@ -1,4 +1,6 @@
 import { CANVASMARGIN } from '../../globals';
+import { Turn } from '../Turn';
+
 
 export class ChessUiHtml {
     private _initialized: boolean = false;
@@ -7,8 +9,14 @@ export class ChessUiHtml {
     private _score_black: HTMLSpanElement;
     private _ui_div: HTMLDivElement;
 
+    callback_save = null;
+    callback_load = null;
+    callback_reset = null;
+    callback_undo = null;
+
     constructor(ui_div: HTMLDivElement) {
         this._ui_div = ui_div;
+        this._ui_div.innerHTML = "";
     }
 
     private _add_btns() {
@@ -26,7 +34,10 @@ export class ChessUiHtml {
         resetBtn.innerHTML = "↻ Reset";
         undoBtn.innerHTML = "↶ Undo";
 
-        // TODO: tie up button onClick callbacks
+        saveBtn.onclick = typeof(this.callback_save) == 'function' ? this.callback_save : this._handle_click;
+        loadBtn.onclick = typeof(this.callback_load) == 'function' ? this.callback_load : this._handle_click;
+        resetBtn.onclick = typeof(this.callback_reset) == 'function' ? this.callback_reset : this._handle_click;
+        undoBtn.onclick = typeof(this.callback_undo) == 'function' ? this.callback_undo : this._handle_click;
 
         aside.append(saveBtn, loadBtn, resetBtn, undoBtn);
         this._ui_div.appendChild(aside);
@@ -85,7 +96,12 @@ export class ChessUiHtml {
         this._score_white = white_score;
     }
 
-    draw() {
+    _handle_click(event) {
+        console.error("Click not implemented for " + event.target.innerHTML);
+        return false;
+    }
+
+    draw(white_score: number, black_score: number, turns: Turn[]) {
         if(!this._initialized) {
             this._add_header();
             this._add_score();
@@ -93,5 +109,26 @@ export class ChessUiHtml {
             this._add_btns();
             this._initialized = true;
         }
+
+        // update score
+        this._score_black.innerHTML = black_score.toString();
+        this._score_white.innerHTML = white_score.toString();
+
+        // update msgs
+        this._msgs_div.innerHTML = "";
+        for(let i = 0; i < turns.length; i++) {
+            let turn = turns[turns.length - 1 - i];
+            for(let j = 0; j < turn.msgs.length; j++) {
+                let msg = turn.msgs[turn.msgs.length - 1 - j],
+                    msg_div = document.createElement("div");
+                
+                msg_div.innerHTML = msg;
+                this._msgs_div.appendChild(msg_div);
+            }
+        }
+    }
+
+    getUiDiv(): HTMLDivElement {
+        return this._ui_div;
     }
 }

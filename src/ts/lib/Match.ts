@@ -22,22 +22,24 @@ export class Match {
     team2: Team;
     turns: Turn[] = new Array();
 
-    constructor(board: Board, team1: Team, team2: Team, ui: ChessUiHtml) {
-        if(team1.side != team2.side) {
-            this.board = board;
-            this.team1 = team1;
-            this.team2 = team2;
+    constructor(canvas: HTMLCanvasElement, pieces_img: HTMLImageElement, ui_div: HTMLDivElement) {
+        this.board = new Board(canvas, pieces_img);
+        this.team1 = new Team(SIDE.white);
+        this.team2 = new Team(SIDE.black);
+        this.turns = [];
 
-            this.setupPieces(this.team1);
-            this.setupPieces(this.team2);
-            this.ai = new ChessAi(this.board);
-            this.ui = ui;
+        this.setupPieces(this.team1);
+        this.setupPieces(this.team2);
+        
+        this.ai = new ChessAi(this.board);
+        this.ui = new ChessUiHtml(ui_div);
+        
+        this.ui.callback_load = (e) => { return this.load(); };
+        this.ui.callback_reset = (e) => { return this.reset(); };
+        this.ui.callback_save = (e) => { return this.save(); };
+        this.ui.callback_undo = (e) => { return this.undoMove(); };
 
-            return this;
-        }
-
-        console.error("Match.constructor: teams must be on different sides.");
-        return null;
+        return this;
     }
 
     clearPossible() {
@@ -81,37 +83,19 @@ export class Match {
                 this.clearPossible();
                 this.draw();
             }
-            // click ui buttons
-            // else if(this.ui.clickedUndoBtn(event)) {
-            //     this.undoMove();
-            // }
-            // else if(this.ui.clickedLoadBtn(event)) {
-            //     this.load();
-            // }
-            // else if(this.ui.clickedResetBtn(event)) {
-            //     this.reset();
-            // }
-            // else if(this.ui.clickedSaveBtn(event)) {
-            //     this.save();
-            // }
             // de-select a piece to move
             else {
                 this.clearPossible();
                 this.draw();
             }
         }
-        // else if(this.ui.clickedResetBtn(event)) {
-        //     this.reset();
-        // }
     }
 
     draw() {
         this.board.draw();
-        this.ui.draw();
-        // this.ui.draw(this.board.ctx, 
-        //     this.getWhiteTeam().getScore(), 
-        //     this.getBlackTeam().getScore(),
-        //     this.turns);
+        this.ui.draw(this.getWhiteTeam().getScore(), 
+            this.getBlackTeam().getScore(),
+            this.turns);
     }
 
     finishTurn() {
@@ -131,7 +115,6 @@ export class Match {
             this.updateStatus("CHECKMATE!!! " + prevTeam.getSide() + " wins!");
             capturedKing.captured = true;
             prevTeam.captures.push(capturedKing);
-            this.turns[this.turns.length - 1].capture = Object.assign({}, capturedKing);
         }
     }
 
@@ -227,9 +210,7 @@ export class Match {
     }
 
     reset() {
-        this.constructor(new Board(this.board.canvas, this.board.pieces_img),
-            new Team(SIDE.white),
-            new Team(SIDE.black));
+        this.constructor(this.board.canvas, this.board.pieces_img, this.ui.getUiDiv());
         this.draw();
     }
 
@@ -361,6 +342,9 @@ export class Match {
 
         // remove the action from the log
         this.turns.pop();
+
+        if(this.checkmate) 
+            this.checkmate = false;
 
         // re-draw the board
         this.draw();
