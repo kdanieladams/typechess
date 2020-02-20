@@ -1,9 +1,5 @@
 Typechess Automated Testing 
-Wed 02/19/2020 21:52:32.77 
-
-> typechess@0.0.1 do_tests C:\Users\Dan\Dev\Repos\typechess
-> mocha --require jsdom-global/register --require ts-node/register tests/**/*.spec.ts
-
+Wed 02/19/2020 22:08:14.53 
 
 
   Test Board
@@ -49,5 +45,5 @@ Wed 02/19/2020 21:52:32.77
       √ should return an array of coordinates conforming to a forward right diagonal line
 
 
-  23 passing (54ms)
+  23 passing (48ms)
 
