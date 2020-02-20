@@ -1,4 +1,6 @@
 /**
+ * Typechess.css
+ * -------------
  * Styles specific to the app.
  */
 #chess_board {
@@ -19,6 +21,10 @@
     grid-gap: 5px;
 }
 
+
+/**
+ * Button Aside
+ */
 #chess_ui aside {
     grid-area: btns;
     /* background-color: green; */
@@ -33,6 +39,12 @@
     border: solid 1px #555;
     padding: 5px;
     border-radius: 7px;
+    cursor: pointer;
+}
+
+#chess_ui aside button:active {
+    /* filter: brightness(50%); */
+    background-color: #222;
 }
 
 #chess_ui aside button:last-child {
@@ -40,15 +52,27 @@
 }
 
 #chess_ui aside button.success {
-    background-color: green;
+    background-color: #090;
     color: white;
+}
+
+#chess_ui aside button.success:active {
+    background-color: #040;
 }
 
 #chess_ui aside button.danger {
-    background-color: red;
+    background-color: #c00;
     color: white;
 }
 
+#chess_ui aside button.danger:active {
+    background-color: #700;
+}
+
+
+/**
+ * Header
+ */
 #chess_ui header {
     grid-area: header;
     display: grid;
@@ -64,6 +88,10 @@
     background-color: #222;
 }
 
+
+/**
+ * Score
+ */
 #chess_ui div.score {
     grid-area: score;
     /* background-color: blue; */
@@ -92,6 +120,10 @@
     color: #ececec;
 }
 
+
+/**
+ * Messages
+ */
 #chess_ui div.msgs {
     grid-area: msgs;
     /* background-color: red; */
@@ -101,6 +133,10 @@
     overflow-y: scroll;
 }
 
+
+/**
+ * Miscellaneous
+ */
 #pieces_img {
     display: none;
 }

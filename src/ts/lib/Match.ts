@@ -3,6 +3,7 @@ import { Board } from './Board';
 import { Cell } from './Cell';
 import { ChessAi } from './ChessAi';
 import { ChessUi } from './ui/ChessUi';
+import { ChessUiHtml } from './ui/ChessUiHtml';
 import { King } from './pieces/King';
 import { Piece } from './pieces/_Piece';
 import { Rook } from './pieces/Rook';
@@ -14,14 +15,14 @@ import { Turn } from './Turn';
  */
 export class Match {
     ai: ChessAi;
-    ui: ChessUi;
+    ui: ChessUiHtml;
     board: Board;
     checkmate: boolean = false;
     team1: Team;
     team2: Team;
     turns: Turn[] = new Array();
 
-    constructor(board: Board, team1: Team, team2: Team) {
+    constructor(board: Board, team1: Team, team2: Team, ui: ChessUiHtml) {
         if(team1.side != team2.side) {
             this.board = board;
             this.team1 = team1;
@@ -30,7 +31,7 @@ export class Match {
             this.setupPieces(this.team1);
             this.setupPieces(this.team2);
             this.ai = new ChessAi(this.board);
-            this.ui = new ChessUi();
+            this.ui = ui;
 
             return this;
         }
@@ -81,37 +82,36 @@ export class Match {
                 this.draw();
             }
             // click ui buttons
-            else if(this.ui.clickedUndoBtn(event)) {
-                this.undoMove();
-            }
-            else if(this.ui.clickedLoadBtn(event)) {
-                this.load();
-            }
-            else if(this.ui.clickedResetBtn(event)) {
-                this.reset();
-            }
-            else if(this.ui.clickedSaveBtn(event)) {
-                this.save();
-            }
+            // else if(this.ui.clickedUndoBtn(event)) {
+            //     this.undoMove();
+            // }
+            // else if(this.ui.clickedLoadBtn(event)) {
+            //     this.load();
+            // }
+            // else if(this.ui.clickedResetBtn(event)) {
+            //     this.reset();
+            // }
+            // else if(this.ui.clickedSaveBtn(event)) {
+            //     this.save();
+            // }
             // de-select a piece to move
             else {
                 this.clearPossible();
                 this.draw();
             }
         }
-        else if(this.ui.clickedResetBtn(event)) {
-            this.reset();
-        }
+        // else if(this.ui.clickedResetBtn(event)) {
+        //     this.reset();
+        // }
     }
 
     draw() {
         this.board.draw();
-        /*
-        this.ui.draw(this.board.ctx, 
-            this.getWhiteTeam().getScore(), 
-            this.getBlackTeam().getScore(),
-            this.turns);
-        */
+        this.ui.draw();
+        // this.ui.draw(this.board.ctx, 
+        //     this.getWhiteTeam().getScore(), 
+        //     this.getBlackTeam().getScore(),
+        //     this.turns);
     }
 
     finishTurn() {

@@ -1,6 +1,8 @@
 /* @import url('https://fonts.googleapis.com/css?family=Raleway&display=swap'); */
 
 /**
+ * Styles.css
+ * ----------
  * Styles for the demo page.
  */
 a:link, a:visited, a:active {
@@ -47,6 +49,6 @@ p {
     display: none;
 }
 
-.raleway {
+/* .raleway {
     font-family: 'Raleway';
-}
+} */
