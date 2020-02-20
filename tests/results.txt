@@ -1,0 +1,53 @@
+Typechess Automated Testing 
+Wed 02/19/2020 21:52:32.77 
+
+> typechess@0.0.1 do_tests C:\Users\Dan\Dev\Repos\typechess
+> mocha --require jsdom-global/register --require ts-node/register tests/**/*.spec.ts
+
+
+
+  Test Board
+    √ should be constructable
+    √ should instantiate itself with an appropriate number of cells
+    cellInBounds()
+      √ should return false for all invalid coords
+      √ should return true for all valid coords
+    draw()
+      √ should be able to draw without errors
+    getCellByCoord()
+      √ should return a Cell instance when provided with a valid coord
+    getCellByPixels()
+      √ should return a Cell instance when provided with pixel coordinates within the boundary of the board
+
+  Test Cell
+    √ should be constructable
+    getFile()
+      √ should return the file text-label
+    getCoord()
+      √ should return the complete file-first coordinate of the cell
+    isOccupied()
+      √ should return true if the cell is assigned a piece
+      √ should return false if the cell is not assigned a piece
+
+  Test Piece
+    √ should be constructable
+    draw()
+      √ it should be able to draw without errors
+    getPieceType()
+      √ should return a human-readable string of the piece's type
+    getSide()
+      √ should return a human-readable string of the piece's side
+    move()
+      √ should relocate the piece if provided a valid Cell instance
+      √ should return false if the Cell appears invalid
+      √ should remove previous reference to occupied cell after moving
+      √ should clear possible moves
+    getCoord()
+      √ should return the file-first coord of the cell which it occupies
+      √ should reutrn an empty string if it does not occupy a cell
+    getDiagMoves()
+      √ should return an array of coordinates conforming to a forward right diagonal line
+
+
+  23 passing (54ms)
+
