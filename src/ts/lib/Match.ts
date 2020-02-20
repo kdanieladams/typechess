@@ -1,3 +1,100 @@
+import { SIDE } from "../globals";
+import { Cell } from "./Cell";
+import { ChessAi } from "./ChessAi";
+import { King } from "./pieces/King";
+import { Piece } from "./pieces/_Piece";
+import { Team } from "./Team";
+import { Turn } from "./Turn";
+
+
 export class Match {
-    
+    isTeamInCheckCallback;
+    updateStatusCallback;
+
+    ai: ChessAi;
+    checkmate: boolean = false;
+    team1: Team;
+    team2: Team;
+    turns: Turn[] = new Array();
+
+    constructor(team1: Team, team2: Team, ai: ChessAi) {
+        this.ai = ai;
+        this.team1 = team1;
+        this.team2 = team2;
+    }
+
+    private _isTeamInCheck(team: Team) {
+        if(typeof(this.isTeamInCheckCallback) == 'function')
+            return this.isTeamInCheckCallback(team);
+        
+        return false;
+    }
+
+    private _updateStatus(msg: string) {
+        if(typeof(this.updateStatusCallback) == 'function')
+            return this.updateStatusCallback(msg);
+        
+        return false;
+    }
+
+    clearPossible() {
+        this.team1.clearPossible();
+        this.team2.clearPossible();
+    }
+
+    finishTurn() {
+        let nextTeam = this.team1.side == this.whosTurn() ? this.team1 : this.team2;
+        let prevTeam = nextTeam.side == this.team1.side ? this.team2 : this.team1;
+
+        if(this._isTeamInCheck(prevTeam))
+            this.checkmate = this.ai.detectCheckMate(prevTeam, nextTeam);
+        else if(this._isTeamInCheck(nextTeam) && !this.checkmate)
+            this.checkmate = this.ai.detectCheckMate(nextTeam, prevTeam);
+
+        if(this.checkmate) {
+            let capturedKing: King = nextTeam.getPieceById(15) as King;
+            this._updateStatus("CHECKMATE!!! " + prevTeam.getSide() + " wins!");
+            capturedKing.captured = true;
+            prevTeam.captures.push(capturedKing);
+        }
+    }
+
+    getBlackTeam() {
+        return this.team1.side == SIDE.black ? this.team1 : this.team2;
+    }
+
+    getWhiteTeam() {
+        return this.team1.side == SIDE.white ? this.team1 : this.team2;
+    }
+
+    startTurn(piece: Piece, moveTo: Cell) {
+        let activeTurn = new Turn(piece, moveTo.getCoord());
+        let activeTeam = piece.side == this.team1.side ? this.team1 : this.team2;
+        let msg = activeTeam.getSide() + " moved " 
+                + activeTeam.activePiece.getPieceType() + "("
+                + activeTeam.activePiece.getCoord().toUpperCase() + ") to "
+                + moveTo.getCoord().toUpperCase() + ".";
+        
+        this.turns.push(activeTurn);
+        this._updateStatus(msg);
+
+        // handle captures
+        if(moveTo.isOccupied()) {
+            let notActiveSide = activeTeam.side == this.team1.side ? this.team2.getSide() : this.team1.getSide();
+            let msg2 = activeTeam.getSide() + " captured " 
+                + notActiveSide + " " + moveTo.piece.getPieceType()
+                + "(" + moveTo.getCoord().toUpperCase() + ") \+" + moveTo.piece.value + "pts.";
+            let pieceCopy = null; 
+
+            moveTo.piece.captured = true;
+            pieceCopy = Object.assign({}, moveTo.piece);
+            activeTurn.capture = pieceCopy;
+            activeTeam.captures.push(pieceCopy);
+            this._updateStatus(msg2);
+        }
+    }
+
+    whosTurn() {
+        return this.turns.length % 2 ? SIDE.black : SIDE.white;
+    }
 }

@@ -1,13 +1,14 @@
 import { FILE, PIECETYPE, SIDE } from '../globals';
 import { Board } from './Board';
-import { Cell } from './Cell';
 import { ChessAi } from './ChessAi';
 import { ChessUi } from './ui/ChessUi';
 import { King } from './pieces/King';
 import { Piece } from './pieces/_Piece';
+import { Match } from './Match';
 import { Rook } from './pieces/Rook';
 import { Team } from './Team';
 import { Turn } from './Turn';
+
 
 /**
  * Typechess
@@ -18,22 +19,19 @@ export class Typechess {
     ai: ChessAi;
     ui: ChessUi;
     board: Board;
-    checkmate: boolean = false;
-    team1: Team;
-    team2: Team;
-    turns: Turn[] = new Array();
+    match: Match;
 
     constructor(canvas: HTMLCanvasElement, pieces_img: HTMLImageElement, ui_div: HTMLDivElement) {
         this.board = new Board(canvas, pieces_img);
-        this.team1 = new Team(SIDE.white);
-        this.team2 = new Team(SIDE.black);
-        this.turns = [];
-
-        this.setupPieces(this.team1);
-        this.setupPieces(this.team2);
-        
         this.ai = new ChessAi(this.board);
         this.ui = new ChessUi(ui_div);
+        this.match = new Match(new Team(SIDE.white), new Team(SIDE.black), this.ai);
+
+        this.match.isTeamInCheckCallback = (team: Team) => { return this.isTeamInCheck(team); };
+        this.match.updateStatusCallback = (msg: string) => { return this.updateStatus(msg); };
+
+        this.setupPieces(this.match.team1);
+        this.setupPieces(this.match.team2);
         
         this.ui.callback_load = (e) => { return this.load(); };
         this.ui.callback_reset = (e) => { return this.reset(); };
@@ -45,15 +43,14 @@ export class Typechess {
 
     clearPossible() {
         this.board.clearPossible();
-        this.team1.clearPossible();
-        this.team2.clearPossible();
+        this.match.clearPossible();
     }
 
     click(event: MouseEvent) {
         let cell = this.board.getCellByPixels(event.offsetX, event.offsetY);
-        let activeTeam = this.team1.side == this.whosTurn() ? this.team1 : this.team2;
+        let activeTeam = this.match.team1.side == this.match.whosTurn() ? this.match.team1 : this.match.team2;
 
-        if(!this.checkmate) {
+        if(!this.match.checkmate) {
             // select a piece to move
             if(cell && cell.isOccupied() && cell.piece.side == activeTeam.side) {
                 let piece = cell.piece;
@@ -66,13 +63,13 @@ export class Typechess {
             // move a piece to a possible cell
             else if(activeTeam.activePiece != null && cell.possibleMove) {
                 
-                this.startTurn(activeTeam.activePiece, cell);
+                this.match.startTurn(activeTeam.activePiece, cell);
                 this.board.getCellByCoord(activeTeam.activePiece.getCoord()).piece = null;
 
                 if(activeTeam.activePiece.type == PIECETYPE.king) 
                 {
                     let king = activeTeam.activePiece as King;
-                    let latestTurn = this.turns[this.turns.length - 1];
+                    let latestTurn = this.match.turns[this.match.turns.length - 1];
 
                     latestTurn.castleRookId = king.castleMove(cell, this.board);;
                 }
@@ -80,7 +77,7 @@ export class Typechess {
                     activeTeam.activePiece.move(cell);
                 }
 
-                this.finishTurn();
+                this.match.finishTurn();
                 this.clearPossible();
                 this.draw();
             }
@@ -94,39 +91,14 @@ export class Typechess {
 
     draw() {
         this.board.draw();
-        this.ui.draw(this.getWhiteTeam().getScore(), 
-            this.getBlackTeam().getScore(),
-            this.turns);
-    }
-
-    finishTurn() {
-        let nextTeam = this.team1.side == this.whosTurn() ? this.team1 : this.team2;
-        let prevTeam = nextTeam.side == this.team1.side ? this.team2 : this.team1;
-
-        if(this.isTeamInCheck(prevTeam))
-            this.checkmate = this.ai.detectCheckMate(prevTeam, nextTeam);
-        else if(this.isTeamInCheck(nextTeam) && !this.checkmate)
-            this.checkmate = this.ai.detectCheckMate(nextTeam, prevTeam);
-
-        if(this.checkmate) {
-            let capturedKing: King = nextTeam.getPieceById(15) as King;
-            this.updateStatus("CHECKMATE!!! " + prevTeam.getSide() + " wins!");
-            capturedKing.captured = true;
-            prevTeam.captures.push(capturedKing);
-        }
-    }
-
-    getBlackTeam() {
-        return this.team1.side == SIDE.black ? this.team1 : this.team2;
-    }
-
-    getWhiteTeam() {
-        return this.team1.side == SIDE.white ? this.team1 : this.team2;
-    }
+        this.ui.draw(this.match.getWhiteTeam().getScore(), 
+            this.match.getBlackTeam().getScore(),
+            this.match.turns);
+    }    
 
     isTeamInCheck(defTeam) {
         let kingCoord: string = defTeam.pieces[15].getCoord(),
-            offTeam: Team = defTeam.side == SIDE.white ? this.getBlackTeam() : this.getWhiteTeam();
+            offTeam: Team = defTeam.side == SIDE.white ? this.match.getBlackTeam() : this.match.getWhiteTeam();
 
         if(this.ai.detectCheck(kingCoord, offTeam)) {
             this.updateStatus(defTeam.getSide() + "\'s king is in check!");
@@ -165,29 +137,29 @@ export class Typechess {
         this.reset();
         
         // place pieces in last known position
-        this.team1.pieces.forEach((piece, i) => {
+        this.match.team1.pieces.forEach((piece, i) => {
             assignPieceProperties(piece, i, saveGame.team1);
         });
-        this.team2.pieces.forEach((piece, i) => {
+        this.match.team2.pieces.forEach((piece, i) => {
             assignPieceProperties(piece, i, saveGame.team2);
         });
 
         // update team captures
         if(saveGame.team1.captures && saveGame.team1.captures instanceof Array) {
             saveGame.team1.captures.forEach(capObj => {
-                this.team1.captures.push(capObj);
+                this.match.team1.captures.push(capObj);
             });
         }
         if(saveGame.team2.captures && saveGame.team2.captures instanceof Array) {
             saveGame.team2.captures.forEach(capObj => {
-                this.team2.captures.push(capObj);
+                this.match.team2.captures.push(capObj);
             });
         }
 
         // update turn collection
         if(saveGame.turns && saveGame.turns instanceof Array) {
             saveGame.turns.forEach(turnObj => {
-                let team = turnObj.side == SIDE.white ? this.getWhiteTeam() : this.getBlackTeam();
+                let team = turnObj.side == SIDE.white ? this.match.getWhiteTeam() : this.match.getBlackTeam();
                 let piece = team.getPieceById(turnObj.movedPiece._id);
                 let startCoord = piece.getCoord();
                 let turn: Turn;
@@ -198,7 +170,7 @@ export class Typechess {
                 turn.msgs = turnObj.msgs;
                 turn.capture = turnObj.capture;
                 turn.castleRookId = turnObj.castleRookId;
-                this.turns.push(turn);
+                this.match.turns.push(turn);
             });
         }
 
@@ -218,9 +190,9 @@ export class Typechess {
 
         if(confirm("Are you sure you want to save the current game?")) {
             window.localStorage.setItem(saveName, JSON.stringify({
-                "team1" : this.team1,
-                "team2" : this.team2,
-                "turns" : this.turns
+                "team1" : this.match.team1,
+                "team2" : this.match.team2,
+                "turns" : this.match.turns
             }));
             alert("Game saved!");
         }
@@ -254,41 +226,14 @@ export class Typechess {
         });
     }
 
-    startTurn(piece: Piece, moveTo: Cell) {
-        let activeTurn = new Turn(piece, moveTo.getCoord());
-        let activeTeam = piece.side == this.team1.side ? this.team1 : this.team2;
-        let msg = activeTeam.getSide() + " moved " 
-                + activeTeam.activePiece.getPieceType() + "("
-                + activeTeam.activePiece.getCoord().toUpperCase() + ") to "
-                + moveTo.getCoord().toUpperCase() + ".";
-        
-        this.turns.push(activeTurn);
-        this.updateStatus(msg);
-
-        // handle captures
-        if(moveTo.isOccupied()) {
-            let notActiveSide = activeTeam.side == this.team1.side ? this.team2.getSide() : this.team1.getSide();
-            let msg2 = activeTeam.getSide() + " captured " 
-                + notActiveSide + " " + moveTo.piece.getPieceType()
-                + "(" + moveTo.getCoord().toUpperCase() + ") \+" + moveTo.piece.value + "pts.";
-            let pieceCopy = null; 
-
-            moveTo.piece.captured = true;
-            pieceCopy = Object.assign({}, moveTo.piece);
-            activeTurn.capture = pieceCopy;
-            activeTeam.captures.push(pieceCopy);
-            this.updateStatus(msg2);
-        }
-    }
-
     undoMove() {
-        if(this.turns.length == 0)
+        if(this.match.turns.length == 0)
             return;
 
-        let latestTurn = this.turns[this.turns.length - 1];
+        let latestTurn = this.match.turns[this.match.turns.length - 1];
         let piece = latestTurn.movedPiece;
         let capturedPiece = latestTurn.capture;
-        let team = latestTurn.side == SIDE.white ? this.getWhiteTeam() : this.getBlackTeam();
+        let team = latestTurn.side == SIDE.white ? this.match.getWhiteTeam() : this.match.getBlackTeam();
 
         // move the piece to it's previous position
         this.board.getCellByCoord(piece.getCoord()).piece = null;
@@ -308,7 +253,7 @@ export class Typechess {
         // replace any captured piece
         if(capturedPiece != null) {
             let offTeam = team;
-            let capTeam = team.side == SIDE.white ? this.getBlackTeam() : this.getWhiteTeam();
+            let capTeam = team.side == SIDE.white ? this.match.getBlackTeam() : this.match.getWhiteTeam();
             
             for(let i = 0; i < capTeam.pieces.length; i++) {
                 let capPieceInst = capTeam.pieces[i];
@@ -341,22 +286,18 @@ export class Typechess {
         }
 
         // remove the action from the log
-        this.turns.pop();
+        this.match.turns.pop();
 
-        if(this.checkmate) 
-            this.checkmate = false;
+        if(this.match.checkmate) 
+            this.match.checkmate = false;
 
         // re-draw the board
         this.draw();
     }
 
     updateStatus(msg: string) {
-        let latestTurn: Turn = this.turns[this.turns.length - 1];
+        let latestTurn: Turn = this.match.turns[this.match.turns.length - 1];
         if(latestTurn != undefined)
             latestTurn.msgs.push(msg);
-    }
-
-    whosTurn() {
-        return this.turns.length % 2 ? SIDE.black : SIDE.white;
     }
 }
