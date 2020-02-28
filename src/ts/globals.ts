@@ -60,6 +60,12 @@ export const UIFONTBTN = config.uiFontBtn;
 
 
 /**
+ * Miscellaneous
+ */
+export const SAVEGAMEPREFIX = config.saveGamePrefix;
+
+
+/**
  * Functions
  */
 export const CAPITALIZE = function(str: string){

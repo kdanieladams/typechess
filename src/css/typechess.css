@@ -171,6 +171,14 @@
     margin: 10px 0;
 }
 
+.swal-content .form-group input[type="text"] {
+    border-radius: 5px;
+    border: solid 2px #999;
+    box-sizing: border-box;
+    padding: 5px;
+    width: 100%;
+}
+
 .swal-modal {
     background-color: #121212;
     border: solid 1px #ccc;

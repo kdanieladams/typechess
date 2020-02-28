@@ -35,7 +35,7 @@ export class Modal {
             this.dangerMode = dangerMode;
     }
 
-    show(event: MouseEvent): Promise<any> {
+    show(): Promise<any> {
         let options: any = {};
 
         if(this.title) 

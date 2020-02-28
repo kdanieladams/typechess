@@ -1,4 +1,5 @@
 import { CANVASMARGIN, CANVASWIDTH } from '../../globals';
+import { Modal } from './Modal';
 import { Turn } from '../Turn';
 
 
@@ -37,10 +38,20 @@ export class ChessUi {
         resetBtn.innerHTML = "↻ Reset";
         undoBtn.innerHTML = "↶ Undo";
 
-        saveBtn.onclick = typeof(this.callback_save) == 'function' ? this.callback_save : this._handle_click;
-        loadBtn.onclick = typeof(this.callback_load) == 'function' ? this.callback_load : this._handle_click;
-        resetBtn.onclick = typeof(this.callback_reset) == 'function' ? this.callback_reset : this._handle_click;
-        undoBtn.onclick = typeof(this.callback_undo) == 'function' ? this.callback_undo : this._handle_click;
+        saveBtn.onclick = (e) => { 
+            if(typeof(this.callback_save) == 'function') {
+                this._click_save(e).then((saveGameName) => { 
+                    if(typeof(saveGameName) == 'string')
+                        this.callback_save(saveGameName); 
+                }); 
+            }
+            else 
+                this._click_save(e);
+        } 
+        
+        loadBtn.onclick = typeof(this.callback_load) == 'function' ? this.callback_load : this._click_fallback;
+        resetBtn.onclick = typeof(this.callback_reset) == 'function' ? this.callback_reset : this._click_fallback;
+        undoBtn.onclick = typeof(this.callback_undo) == 'function' ? this.callback_undo : this._click_fallback;
 
         aside.append(saveBtn, loadBtn, resetBtn, undoBtn);
         this._ui_div.appendChild(aside);
@@ -101,9 +112,43 @@ export class ChessUi {
         this._score_hdr_white = white_hdr;
     }
 
-    private _handle_click(event) {
-        console.error("Click not implemented for " + event.target.innerHTML);
+    private _click_fallback(event: MouseEvent) {
+        console.error("Click not implemented for " + (event.target as HTMLElement).innerHTML);
         return false;
+    }
+
+    private _click_save(event): Promise<any> {
+        let buttons: any,
+            title = "Save Game",
+            msg = document.createElement("div"),
+            msg2: string = "Enter a name for the save:",
+            modal: Modal;
+
+        msg.innerHTML = `
+            Enter a name for the save:
+            <div class="form-group">
+                <input type="text" id="saveGameName" placeholder="Save Game 1">
+            </div>
+        `;
+
+        buttons = {
+            cancel: true,
+            confirm: {
+                text: "Save Game",
+                value: true
+            }
+        };
+
+        modal = new Modal(title, msg, buttons);
+        
+        return modal.show().then((value) => {
+            if(value === true) {
+                let saveGameName = (document.getElementById("saveGameName") as HTMLInputElement).value;
+                return saveGameName;
+            }
+
+            return false;
+        });
     }
 
     draw(white_score: number, black_score: number, turns: Turn[]) {

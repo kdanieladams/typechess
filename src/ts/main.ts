@@ -62,7 +62,7 @@ window.addEventListener('load', (load_event) => {
         };
 
         modal = new Modal(title, msg, buttons);
-        modal.show(e).then((value) => {
+        modal.show().then((value) => {
             let chosenSaveGame = (document.querySelector('input[name="savegame"]:checked') as HTMLInputElement).value;
             
             console.log("value = " + value);
@@ -75,7 +75,7 @@ window.addEventListener('load', (load_event) => {
                 (new Modal("Delete Game", 
                     "Are you sure you want to delete " + saveGameName + "?", 
                     [true, "Delete it!"], true))
-                .show(e).then((value) => {
+                .show().then((value) => {
                     if(value === true) {
                         console.log("Deleted saveGame: " + chosenSaveGame);
                     }

@@ -1,11 +1,13 @@
-import { FILE, PIECETYPE, SIDE } from '../globals';
+import { FILE, PIECETYPE, SAVEGAMEPREFIX, SIDE } from '../globals';
 import { Board } from './Board';
 import { ChessAi } from './ChessAi';
 import { ChessUi } from './ui/ChessUi';
 import { King } from './pieces/King';
 import { Piece } from './pieces/_Piece';
 import { Match } from './Match';
+import { Modal } from './ui/Modal';
 import { Rook } from './pieces/Rook';
+import { SaveGame } from './ui/SaveGame';
 import { Team } from './Team';
 import { Turn } from './Turn';
 
@@ -32,9 +34,9 @@ export class Typechess {
         this.setupPieces(this.match.team1);
         this.setupPieces(this.match.team2);
         
-        this.ui.callback_load = (e) => { return this.load(); };
+        this.ui.callback_load = (e) => { return this.loadGame(); };
         this.ui.callback_reset = (e) => { return this.reset(); };
-        this.ui.callback_save = (e) => { return this.save(); };
+        this.ui.callback_save = (saveName) => { return this.saveGame(saveName); };
         this.ui.callback_undo = (e) => { return this.undoMove(); };
 
         return this;
@@ -95,7 +97,7 @@ export class Typechess {
             this.match.turns);
     }
 
-    load() {
+    loadGame() {
         let saveGame = JSON.parse(window.localStorage.getItem("Typechess_Save"));
         let assignPieceProperties = (piece: Piece, i: number, teamObj: any) => {
             let pieceObj = teamObj.pieces[i];
@@ -166,17 +168,20 @@ export class Typechess {
         this.draw();
     }
 
-    save() {
-        let currDate = new Date(),
-            saveName = "Typechess_Save";
+    saveGame(name: string) {
+        let confirmModal: Modal = new Modal();
 
-        if(confirm("Are you sure you want to save the current game?")) {
-            window.localStorage.setItem(saveName, JSON.stringify({
-                "team1" : this.match.team1,
-                "team2" : this.match.team2,
-                "turns" : this.match.turns
-            }));
-            alert("Game saved!");
+        confirmModal.title = "Save Game"
+
+        if(name.length > 0) {
+            let saveGame = new SaveGame(name, this.match.team1, this.match.team2, this.match.turns);            
+            window.localStorage.setItem(SAVEGAMEPREFIX + "_" + name, JSON.stringify(saveGame));
+            confirmModal.message = "Game successfully saved as " + name + "!";
+            confirmModal.show();
+        }
+        else {
+            confirmModal = new Modal(confirmModal.title, "ERROR! You must enter a save name!  Please try again.", [false, true], true);
+            confirmModal.show();
         }
     }
 
