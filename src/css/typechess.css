@@ -135,22 +135,23 @@
 /**
  * Messages
  */
-#chess_ui div.msgs {
+#chess_ui ul.msgs {
     background-color: #121212;
     border: solid 1px #ccc;
     font-size: 14px;
     grid-area: msgs;
     height: 90px;
+    margin: 0;
     overflow-y: scroll;
     padding: 5px;
     text-align: center;
 }
 
-#chess_ui div.msgs div {
+#chess_ui ul.msgs li {
     margin: 0 0 5px;
 }
 
-#chess_ui div.msgs div:first-child {
+#chess_ui ul.msgs li:first-child {
     color: white;
 }
 

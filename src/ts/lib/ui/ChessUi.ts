@@ -4,7 +4,7 @@ import { Turn } from '../Turn';
 
 export class ChessUi {
     private _initialized: boolean = false;
-    private _msgs_div: HTMLDivElement;
+    private _msgs_ul: HTMLUListElement;
     private _score_hdr_white: HTMLSpanElement;
     private _score_white: HTMLSpanElement;
     private _score_hdr_black: HTMLSpanElement;
@@ -59,13 +59,13 @@ export class ChessUi {
     }
 
     private _add_msgs() {
-        let msgs = document.createElement("div");
+        let msgs = document.createElement("ul");
 
         msgs.classList.add("msgs");
         msgs.innerHTML = "Loading...";
 
         this._ui_div.appendChild(msgs);
-        this._msgs_div = msgs;
+        this._msgs_ul = msgs;
     }
 
     private _add_score() {
@@ -134,15 +134,15 @@ export class ChessUi {
         }
 
         // update msgs
-        this._msgs_div.innerHTML = "";
+        this._msgs_ul.innerHTML = "";
         for(let i = 0; i < turns.length; i++) {
             let turn = turns[turns.length - 1 - i];
             for(let j = 0; j < turn.msgs.length; j++) {
                 let msg = turn.msgs[turn.msgs.length - 1 - j],
-                    msg_div = document.createElement("div");
+                    msg_div = document.createElement("li");
                 
                 msg_div.innerHTML = msg;
-                this._msgs_div.appendChild(msg_div);
+                this._msgs_ul.appendChild(msg_div);
             }
         }
     }
