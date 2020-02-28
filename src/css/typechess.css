@@ -161,3 +161,33 @@
 #pieces_img {
     display: none;
 }
+
+
+/**
+ * Modal Customization
+ */
+.swal-content .form-group {
+    text-align: left;
+    margin: 10px 0;
+}
+
+.swal-modal {
+    background-color: #121212;
+    border: solid 1px #ccc;
+    color: #999;
+}
+
+.swal-title {
+    color: #999;
+}
+
+.swal-text {
+    color: #999;
+}
+
+.swal-button--confirm:not(.swal-button--danger) {
+    background-color: #090;
+}
+.swal-button:not([disabled]).swal-button--confirm:not(.swal-button--danger):hover {
+    background-color: #0c0;
+}
