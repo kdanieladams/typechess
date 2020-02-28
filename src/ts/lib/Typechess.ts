@@ -34,7 +34,7 @@ export class Typechess {
         this.setupPieces(this.match.team1);
         this.setupPieces(this.match.team2);
         
-        this.ui.callback_load = (e) => { return this.loadGame(); };
+        this.ui.callback_load = (savedGame) => { return this.loadGame(savedGame); };
         this.ui.callback_reset = (e) => { return this.reset(); };
         this.ui.callback_save = (saveName) => { return this.saveGame(saveName); };
         this.ui.callback_undo = (e) => { return this.undoMove(); };
@@ -97,8 +97,9 @@ export class Typechess {
             this.match.turns);
     }
 
-    loadGame() {
-        let saveGame = JSON.parse(window.localStorage.getItem("Typechess_Save"));
+    loadGame(savedGame: SaveGame) {
+        // let saveGame = JSON.parse(window.localStorage.getItem("Typechess_Save"));
+        let modalTitle: string = "Load Game";
         let assignPieceProperties = (piece: Piece, i: number, teamObj: any) => {
             let pieceObj = teamObj.pieces[i];
             let cell = this.board.getCellByCoord(piece.getCoord());
@@ -112,8 +113,8 @@ export class Typechess {
             }
         }
 
-        if(!saveGame) {
-            alert('No save found!');
+        if(!savedGame) {
+            (new Modal(modalTitle, "ERROR: Game not found!", [false, true], true)).show();
             return;
         }
 
@@ -122,29 +123,29 @@ export class Typechess {
         
         // place pieces in last known position
         this.match.team1.pieces.forEach((piece, i) => {
-            assignPieceProperties(piece, i, saveGame.team1);
+            assignPieceProperties(piece, i, savedGame.team1);
         });
         this.match.team2.pieces.forEach((piece, i) => {
-            assignPieceProperties(piece, i, saveGame.team2);
+            assignPieceProperties(piece, i, savedGame.team2);
         });
 
         // update team captures
-        if(saveGame.team1.captures && saveGame.team1.captures instanceof Array) {
-            saveGame.team1.captures.forEach(capObj => {
+        if(savedGame.team1.captures && savedGame.team1.captures instanceof Array) {
+            savedGame.team1.captures.forEach(capObj => {
                 this.match.team1.captures.push(capObj);
             });
         }
-        if(saveGame.team2.captures && saveGame.team2.captures instanceof Array) {
-            saveGame.team2.captures.forEach(capObj => {
+        if(savedGame.team2.captures && savedGame.team2.captures instanceof Array) {
+            savedGame.team2.captures.forEach(capObj => {
                 this.match.team2.captures.push(capObj);
             });
         }
 
         // update turn collection
-        if(saveGame.turns && saveGame.turns instanceof Array) {
-            saveGame.turns.forEach(turnObj => {
+        if(savedGame.turns && savedGame.turns instanceof Array) {
+            savedGame.turns.forEach(turnObj => {
                 let team = turnObj.side == SIDE.white ? this.match.getWhiteTeam() : this.match.getBlackTeam();
-                let piece = team.getPieceById(turnObj.movedPiece._id);
+                let piece = team.getPieceById((turnObj.movedPiece as any)._id);
                 let startCoord = piece.getCoord();
                 let turn: Turn;
 
@@ -160,7 +161,7 @@ export class Typechess {
 
         // re-draw board and UI
         this.draw();
-        alert('Game Loaded!');
+        (new Modal(modalTitle, "\"" + savedGame.name + "\" loaded successfully!")).show();
     }
 
     reset() {
@@ -170,13 +171,12 @@ export class Typechess {
 
     saveGame(name: string) {
         let confirmModal: Modal = new Modal();
-
         confirmModal.title = "Save Game"
 
         if(name.length > 0) {
             let saveGame = new SaveGame(name, this.match.team1, this.match.team2, this.match.turns);            
             window.localStorage.setItem(SAVEGAMEPREFIX + "_" + name, JSON.stringify(saveGame));
-            confirmModal.message = "Game successfully saved as " + name + "!";
+            confirmModal.message = "Game successfully saved as \"" + name + "\"!";
             confirmModal.show();
         }
         else {
