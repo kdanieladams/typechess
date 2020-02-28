@@ -161,3 +161,41 @@
 #pieces_img {
     display: none;
 }
+
+
+/**
+ * Modal Customization
+ */
+.swal-content .form-group {
+    text-align: left;
+    margin: 10px 0;
+}
+
+.swal-content .form-group input[type="text"] {
+    border-radius: 5px;
+    border: solid 2px #999;
+    box-sizing: border-box;
+    padding: 5px;
+    width: 100%;
+}
+
+.swal-modal {
+    background-color: #121212;
+    border: solid 1px #ccc;
+    color: #999;
+}
+
+.swal-title {
+    color: #999;
+}
+
+.swal-text {
+    color: #999;
+}
+
+.swal-button--confirm:not(.swal-button--danger) {
+    background-color: #090;
+}
+.swal-button:not([disabled]).swal-button--confirm:not(.swal-button--danger):hover {
+    background-color: #0c0;
+}

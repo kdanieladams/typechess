@@ -1,11 +1,13 @@
-import { FILE, PIECETYPE, SIDE } from '../globals';
+import { FILE, PIECETYPE, SAVEGAMEPREFIX, SIDE } from '../globals';
 import { Board } from './Board';
 import { ChessAi } from './ChessAi';
 import { ChessUi } from './ui/ChessUi';
 import { King } from './pieces/King';
 import { Piece } from './pieces/_Piece';
 import { Match } from './Match';
+import { Modal } from './ui/Modal';
 import { Rook } from './pieces/Rook';
+import { SaveGame } from './ui/SaveGame';
 import { Team } from './Team';
 import { Turn } from './Turn';
 
@@ -32,9 +34,9 @@ export class Typechess {
         this.setupPieces(this.match.team1);
         this.setupPieces(this.match.team2);
         
-        this.ui.callback_load = (e) => { return this.load(); };
+        this.ui.callback_load = (savedGame) => { return this.loadGame(savedGame); };
         this.ui.callback_reset = (e) => { return this.reset(); };
-        this.ui.callback_save = (e) => { return this.save(); };
+        this.ui.callback_save = (saveName) => { return this.saveGame(saveName); };
         this.ui.callback_undo = (e) => { return this.undoMove(); };
 
         return this;
@@ -95,8 +97,9 @@ export class Typechess {
             this.match.turns);
     }
 
-    load() {
-        let saveGame = JSON.parse(window.localStorage.getItem("Typechess_Save"));
+    loadGame(savedGame: SaveGame) {
+        // let saveGame = JSON.parse(window.localStorage.getItem("Typechess_Save"));
+        let modalTitle: string = "Load Game";
         let assignPieceProperties = (piece: Piece, i: number, teamObj: any) => {
             let pieceObj = teamObj.pieces[i];
             let cell = this.board.getCellByCoord(piece.getCoord());
@@ -110,8 +113,8 @@ export class Typechess {
             }
         }
 
-        if(!saveGame) {
-            alert('No save found!');
+        if(!savedGame) {
+            (new Modal(modalTitle, "ERROR: Game not found!", [false, true], true)).show();
             return;
         }
 
@@ -120,29 +123,29 @@ export class Typechess {
         
         // place pieces in last known position
         this.match.team1.pieces.forEach((piece, i) => {
-            assignPieceProperties(piece, i, saveGame.team1);
+            assignPieceProperties(piece, i, savedGame.team1);
         });
         this.match.team2.pieces.forEach((piece, i) => {
-            assignPieceProperties(piece, i, saveGame.team2);
+            assignPieceProperties(piece, i, savedGame.team2);
         });
 
         // update team captures
-        if(saveGame.team1.captures && saveGame.team1.captures instanceof Array) {
-            saveGame.team1.captures.forEach(capObj => {
+        if(savedGame.team1.captures && savedGame.team1.captures instanceof Array) {
+            savedGame.team1.captures.forEach(capObj => {
                 this.match.team1.captures.push(capObj);
             });
         }
-        if(saveGame.team2.captures && saveGame.team2.captures instanceof Array) {
-            saveGame.team2.captures.forEach(capObj => {
+        if(savedGame.team2.captures && savedGame.team2.captures instanceof Array) {
+            savedGame.team2.captures.forEach(capObj => {
                 this.match.team2.captures.push(capObj);
             });
         }
 
         // update turn collection
-        if(saveGame.turns && saveGame.turns instanceof Array) {
-            saveGame.turns.forEach(turnObj => {
+        if(savedGame.turns && savedGame.turns instanceof Array) {
+            savedGame.turns.forEach(turnObj => {
                 let team = turnObj.side == SIDE.white ? this.match.getWhiteTeam() : this.match.getBlackTeam();
-                let piece = team.getPieceById(turnObj.movedPiece._id);
+                let piece = team.getPieceById((turnObj.movedPiece as any)._id);
                 let startCoord = piece.getCoord();
                 let turn: Turn;
 
@@ -158,7 +161,7 @@ export class Typechess {
 
         // re-draw board and UI
         this.draw();
-        alert('Game Loaded!');
+        (new Modal(modalTitle, "\"" + savedGame.name + "\" loaded successfully!")).show();
     }
 
     reset() {
@@ -166,17 +169,19 @@ export class Typechess {
         this.draw();
     }
 
-    save() {
-        let currDate = new Date(),
-            saveName = "Typechess_Save";
+    saveGame(name: string) {
+        let confirmModal: Modal = new Modal();
+        confirmModal.title = "Save Game"
 
-        if(confirm("Are you sure you want to save the current game?")) {
-            window.localStorage.setItem(saveName, JSON.stringify({
-                "team1" : this.match.team1,
-                "team2" : this.match.team2,
-                "turns" : this.match.turns
-            }));
-            alert("Game saved!");
+        if(name.length > 0) {
+            let saveGame = new SaveGame(name, this.match.team1, this.match.team2, this.match.turns);            
+            window.localStorage.setItem(SAVEGAMEPREFIX + "_" + name, JSON.stringify(saveGame));
+            confirmModal.message = "Game successfully saved as \"" + name + "\"!";
+            confirmModal.show();
+        }
+        else {
+            confirmModal = new Modal(confirmModal.title, "ERROR! You must enter a save name!  Please try again.", [false, true], true);
+            confirmModal.show();
         }
     }
 

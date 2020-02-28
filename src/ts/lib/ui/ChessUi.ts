@@ -1,4 +1,7 @@
-import { CANVASMARGIN, CANVASWIDTH } from '../../globals';
+import { CANVASMARGIN, CANVASWIDTH, SAVEGAMEPREFIX } from '../../globals';
+import { ButtonList } from 'sweetalert/typings/modules/options/buttons';
+import { Modal } from './Modal';
+import { SaveGame } from './SaveGame';
 import { Turn } from '../Turn';
 
 
@@ -37,10 +40,48 @@ export class ChessUi {
         resetBtn.innerHTML = "↻ Reset";
         undoBtn.innerHTML = "↶ Undo";
 
-        saveBtn.onclick = typeof(this.callback_save) == 'function' ? this.callback_save : this._handle_click;
-        loadBtn.onclick = typeof(this.callback_load) == 'function' ? this.callback_load : this._handle_click;
-        resetBtn.onclick = typeof(this.callback_reset) == 'function' ? this.callback_reset : this._handle_click;
-        undoBtn.onclick = typeof(this.callback_undo) == 'function' ? this.callback_undo : this._handle_click;
+        saveBtn.onclick = (e) => { 
+            this._click_save(e).then((saveGameName) => { 
+                if(typeof(saveGameName) == 'string') {
+                    if(typeof(this.callback_save) == 'function')
+                        this.callback_save(saveGameName); 
+                    else
+                        this._click_fallback(e);
+                }
+            }); 
+        } 
+        
+        loadBtn.onclick = (e) => {
+            this._click_load(e).then((params) => {
+                if(typeof(params) == 'object' && params.name){
+                    let savedGame = JSON.parse(window.localStorage.getItem(SAVEGAMEPREFIX + "_" + params.name)) as SaveGame;
+                    if(params.delete) {
+                        console.log('delete game: ' + savedGame.name);
+                    }
+                    else {
+                        // console.log('load game: ' + savedGame.name);
+                        if(typeof(this.callback_load) == 'function')
+                            this.callback_load(savedGame);
+                        else
+                            this._click_fallback(e);
+                    }
+                }
+            });
+        };
+
+        // resetBtn.onclick = typeof(this.callback_reset) == 'function' ? this.callback_reset : this._click_fallback;
+        resetBtn.onclick = (e) => {
+            this._click_reset(e).then((value) => {
+                if(value === true) {
+                    if (typeof(this.callback_reset) == 'function')
+                        this.callback_reset(e);
+                    else
+                        this._click_fallback(e);
+                }
+            });
+        };
+
+        undoBtn.onclick = typeof(this.callback_undo) == 'function' ? this.callback_undo : this._click_fallback;
 
         aside.append(saveBtn, loadBtn, resetBtn, undoBtn);
         this._ui_div.appendChild(aside);
@@ -101,9 +142,120 @@ export class ChessUi {
         this._score_hdr_white = white_hdr;
     }
 
-    private _handle_click(event) {
-        console.error("Click not implemented for " + event.target.innerHTML);
+    private _click_fallback(event: MouseEvent) {
+        console.error("Click not implemented for " + (event.target as HTMLElement).innerHTML);
         return false;
+    }
+
+    private _click_load(event): Promise<any> {
+        let title = "Load Game",
+            msg = document.createElement("div"),
+            buttons: ButtonList,
+            modal: Modal,
+            saveGames: Array<SaveGame> = [];
+
+        for(let i = 0; i < window.localStorage.length; i++) {
+            let key = window.localStorage.key(i);
+            if(key.indexOf(SAVEGAMEPREFIX) == 0) {
+                let saveGame = JSON.parse(window.localStorage.getItem(key)) as SaveGame;
+                saveGames.push(saveGame);
+            }
+        }
+
+        msg.innerHTML = "Choose a game to load:";
+        saveGames.forEach((saveGame, i) => {
+            let formGroup = document.createElement("div"),
+                radioBtn = document.createElement("input"),
+                radioLbl = document.createElement("label");
+            
+            formGroup.className = "form-group";
+            radioBtn.type = "radio";
+            radioBtn.name = "savegame";
+            radioBtn.value = saveGame.name;
+            radioBtn.id = (i + 1) + "_" + saveGame.name;
+
+            if(i == 0) {
+                radioBtn.checked = true;
+            }
+
+            saveGame.saveDate = new Date(saveGame.saveDate);
+            radioLbl.setAttribute("for", radioBtn.id);
+            radioLbl.innerHTML = saveGame.saveDate.toLocaleDateString() 
+                + " " + saveGame.saveDate.toLocaleTimeString()
+                + " - " + saveGame.name;
+
+            formGroup.appendChild(radioBtn);
+            formGroup.appendChild(radioLbl);
+            msg.appendChild(formGroup);
+        });
+
+        buttons = {
+            cancel: true,
+            delete: {
+                text: "Delete",
+                value: "delete",
+                className: "swal-button--danger"
+            },
+            confirm: {
+                text: "Load Game",
+                value: true
+            }
+        };
+        modal = new Modal(title, msg, buttons);
+
+        return modal.show().then((value) => {
+            let chosenGameElm = document.querySelector('input[name="savegame"]:checked') as HTMLInputElement;
+
+            switch(value) {
+                case true:
+                    return {
+                        delete: false,
+                        name: chosenGameElm.value
+                    }
+                    break;
+                case "delete":
+                    return {
+                        delete: true,
+                        name: chosenGameElm.value
+                    };
+                    break;
+                default:
+                    return false;
+            }
+        });
+    }
+
+    private _click_reset(event): Promise<any> {
+        let title = "Reset Board",
+            msg = "Are you sure you want to reset the board to a new game?",
+            modal: Modal;
+
+        modal = new Modal(title, msg, [true, "Reset Board"], true);
+        return modal.show();
+    }
+
+    private _click_save(event): Promise<any> {
+        let title = "Save Game",
+            msg = document.createElement("div"),
+            modal: Modal;
+
+        msg.innerHTML = `
+            Enter a name for the save:
+            <div class="form-group">
+                <input type="text" id="saveGameName" placeholder="Save Game 1">
+            </div>
+        `;
+
+        modal = new Modal(title, msg, [true, "Save Game"]);
+        
+        return modal.show().then((value) => {
+            if(value === true) {
+                let saveGameName = (document.getElementById("saveGameName") as HTMLInputElement).value;
+                return saveGameName;
+            }
+
+            return false;
+        });
     }
 
     draw(white_score: number, black_score: number, turns: Turn[]) {

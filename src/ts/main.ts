@@ -3,6 +3,7 @@ import '../css/typechess.css';
 import * as config from './config.json';
 import { Typechess } from './lib/Typechess';
 
+
 /**
  * Start
  */
