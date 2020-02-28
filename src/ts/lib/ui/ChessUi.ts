@@ -69,7 +69,18 @@ export class ChessUi {
             });
         };
 
-        resetBtn.onclick = typeof(this.callback_reset) == 'function' ? this.callback_reset : this._click_fallback;
+        // resetBtn.onclick = typeof(this.callback_reset) == 'function' ? this.callback_reset : this._click_fallback;
+        resetBtn.onclick = (e) => {
+            this._click_reset(e).then((value) => {
+                if(value === true) {
+                    if (typeof(this.callback_reset) == 'function')
+                        this.callback_reset(e);
+                    else
+                        this._click_fallback(e);
+                }
+            });
+        };
+
         undoBtn.onclick = typeof(this.callback_undo) == 'function' ? this.callback_undo : this._click_fallback;
 
         aside.append(saveBtn, loadBtn, resetBtn, undoBtn);
@@ -212,6 +223,15 @@ export class ChessUi {
                     return false;
             }
         });
+    }
+
+    private _click_reset(event): Promise<any> {
+        let title = "Reset Board",
+            msg = "Are you sure you want to reset the board to a new game?",
+            modal: Modal;
+
+        modal = new Modal(title, msg, [true, "Reset Board"], true);
+        return modal.show();
     }
 
     private _click_save(event): Promise<any> {
