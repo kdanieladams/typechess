@@ -27,7 +27,6 @@ export class Typechess {
         this.ui = new ChessUi(ui_div);
         this.match = new Match(new Team(SIDE.white), new Team(SIDE.black), this.ai);
 
-        this.match.isTeamInCheckCallback = (team: Team) => { return this.isTeamInCheck(team); };
         this.match.updateStatusCallback = (msg: string) => { return this.updateStatus(msg); };
 
         this.setupPieces(this.match.team1);
@@ -94,23 +93,6 @@ export class Typechess {
         this.ui.draw(this.match.getWhiteTeam().getScore(), 
             this.match.getBlackTeam().getScore(),
             this.match.turns);
-    }    
-
-    isTeamInCheck(defTeam) {
-        let kingCoord: string = defTeam.pieces[15].getCoord(),
-            offTeam: Team = defTeam.side == SIDE.white ? this.match.getBlackTeam() : this.match.getWhiteTeam();
-
-        if(this.ai.detectCheck(kingCoord, offTeam)) {
-            this.updateStatus(defTeam.getSide() + "\'s king is in check!");
-            defTeam.kingInCheck = true;
-            return true;
-        }
-        else if(defTeam.kingInCheck == true) {
-            this.updateStatus(defTeam.getSide() + "\'s king is no longer in check!");
-            defTeam.kingInCheck = false;
-        }
-
-        return false;
     }
 
     load() {
@@ -253,10 +235,10 @@ export class Typechess {
         // replace any captured piece
         if(capturedPiece != null) {
             let offTeam = team;
-            let capTeam = team.side == SIDE.white ? this.match.getBlackTeam() : this.match.getWhiteTeam();
+            let defTeam = team.side == SIDE.white ? this.match.getBlackTeam() : this.match.getWhiteTeam();
             
-            for(let i = 0; i < capTeam.pieces.length; i++) {
-                let capPieceInst = capTeam.pieces[i];
+            for(let i = 0; i < defTeam.pieces.length; i++) {
+                let capPieceInst = defTeam.pieces[i];
 
                 if(capPieceInst.captured && capPieceInst.getId() == capturedPiece._id)
                 {
@@ -267,6 +249,11 @@ export class Typechess {
                 }
             }
 
+            if(this.match.checkmate) {
+                // remove the defensive king from the offensive captures
+                offTeam.captures.pop();
+            }
+            
             // remove captured pieces from Team.captured
             offTeam.captures.pop();
         }

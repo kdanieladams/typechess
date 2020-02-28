@@ -8,7 +8,6 @@ import { Turn } from "./Turn";
 
 
 export class Match {
-    isTeamInCheckCallback;
     updateStatusCallback;
 
     ai: ChessAi;
@@ -21,13 +20,6 @@ export class Match {
         this.ai = ai;
         this.team1 = team1;
         this.team2 = team2;
-    }
-
-    private _isTeamInCheck(team: Team) {
-        if(typeof(this.isTeamInCheckCallback) == 'function')
-            return this.isTeamInCheckCallback(team);
-        
-        return false;
     }
 
     private _updateStatus(msg: string) {
@@ -46,9 +38,9 @@ export class Match {
         let nextTeam = this.team1.side == this.whosTurn() ? this.team1 : this.team2;
         let prevTeam = nextTeam.side == this.team1.side ? this.team2 : this.team1;
 
-        if(this._isTeamInCheck(prevTeam))
+        if(this.isTeamInCheck(prevTeam))
             this.checkmate = this.ai.detectCheckMate(prevTeam, nextTeam);
-        else if(this._isTeamInCheck(nextTeam) && !this.checkmate)
+        else if(this.isTeamInCheck(nextTeam) && !this.checkmate)
             this.checkmate = this.ai.detectCheckMate(nextTeam, prevTeam);
 
         if(this.checkmate) {
@@ -65,6 +57,27 @@ export class Match {
 
     getWhiteTeam() {
         return this.team1.side == SIDE.white ? this.team1 : this.team2;
+    }
+
+    isTeamInCheck(defTeam: Team, sendMsgs: boolean = false) {
+        let kingCoord: string = defTeam.pieces[15].getCoord(),
+            offTeam: Team = defTeam.side == SIDE.white ? this.getBlackTeam() : this.getWhiteTeam();
+
+        if(this.ai.detectCheck(kingCoord, offTeam)) {
+            if(sendMsgs)
+                this._updateStatus(defTeam.getSide() + "\'s king is in check!");
+            
+            defTeam.kingInCheck = true;
+            return true;
+        }
+        else if(defTeam.kingInCheck == true) {
+            if(sendMsgs)
+                this._updateStatus(defTeam.getSide() + "\'s king is no longer in check!");
+            
+            defTeam.kingInCheck = false;
+        }
+
+        return false;
     }
 
     startTurn(piece: Piece, moveTo: Cell) {
