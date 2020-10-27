@@ -1,4 +1,4 @@
-import { CANVASMARGIN, CANVASWIDTH, SAVEGAMEPREFIX } from '../../globals';
+import { CANVASMARGIN, CANVASWIDTH, GETENUMKEY, SAVEGAMEPREFIX, SIDE } from '../../globals';
 import { ButtonList } from 'sweetalert/typings/modules/options/buttons';
 import { Modal } from './Modal';
 import { SaveGame } from './SaveGame';
@@ -6,6 +6,7 @@ import { Turn } from '../Turn';
 
 
 export class ChessUi {
+    private _ai_side: string = null;
     private _initialized: boolean = false;
     private _msgs_ul: HTMLUListElement;
     private _score_hdr_white: HTMLSpanElement;
@@ -18,6 +19,7 @@ export class ChessUi {
     callback_load = null;
     callback_reset = null;
     callback_undo = null;
+    callback_engage_ai = null;
 
     constructor(ui_div: HTMLDivElement) {
         this._ui_div = ui_div;
@@ -146,6 +148,20 @@ export class ChessUi {
         this._score_hdr_black = black_hdr;
         this._score_white = white_score;
         this._score_hdr_white = white_hdr;
+
+        this._score_black.onclick = (e) => {
+            this._click_score(0);
+        };
+        this._score_hdr_black.onclick = (e) => {
+            this._click_score(0);
+        };
+
+        this._score_white.onclick = (e) => {
+            this._click_score(1);
+        };
+        this._score_hdr_white.onclick = (e) => {
+            this._click_score(1);
+        };
     }
 
     private _click_fallback(event: MouseEvent) {
@@ -272,6 +288,58 @@ export class ChessUi {
 
             return false;
         });
+    }
+
+    private _click_score(sideNum: number) {
+        let side: string = SIDE[sideNum],
+            msg: string,
+            modal: Modal;
+
+        if(side != this._ai_side) {
+            // turn ai on...
+            msg = "Are you sure you want the AI to control " + side + "?",
+            modal = new Modal("Engage AI", msg, ["Cancel", "OK"]);
+
+            modal.show().then((confirmAi) => {
+                if(confirmAi) {
+                    if(sideNum == SIDE.white) {
+                        this._score_hdr_white.innerHTML = "💻 White:";
+                        this._score_hdr_black.innerHTML = "Black:";
+                    }
+                    else {
+                        this._score_hdr_black.innerHTML = "💻 Black:";
+                        this._score_hdr_white.innerHTML = "White:";
+                    }
+
+                    this._ai_side = side;
+
+                    if (typeof(this.callback_engage_ai) == 'function')
+                        this.callback_engage_ai(sideNum);
+                    else
+                        this._click_fallback(null);
+                }
+            });
+        }
+        else {
+            // turn ai off...
+            msg = "Are you sure you want to turn the ai off?",
+            modal = new Modal("Disengage AI", msg, ["Cancel", "OK"]);
+
+            modal.show().then((confirmNoAi) => {
+                if(confirmNoAi) {
+                    this._score_hdr_white.innerHTML = "White:";
+                    this._score_hdr_black.innerHTML = "Black:";
+                    this._ai_side = null;
+
+                    if (typeof(this.callback_engage_ai) == 'function')
+                        this.callback_engage_ai(sideNum, true);
+                    else
+                        this._click_fallback(null);
+                }
+            });
+        }
+
+        return;
     }
 
     private _delete_game(saveGameName: string, saveGameKey: string, loadBtn: HTMLButtonElement) {

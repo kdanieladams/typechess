@@ -1,4 +1,4 @@
-import { FILE, PIECETYPE, SAVEGAMEPREFIX, SIDE } from '../globals';
+import { FILE, GETENUMKEY, PIECETYPE, SAVEGAMEPREFIX, SIDE } from '../globals';
 import { Board } from './Board';
 import { ChessAi } from './ChessAi';
 import { ChessUi } from './ui/ChessUi';
@@ -10,6 +10,7 @@ import { Rook } from './pieces/Rook';
 import { SaveGame } from './ui/SaveGame';
 import { Team } from './Team';
 import { Turn } from './Turn';
+import { Cell } from './Cell';
 
 
 /**
@@ -29,6 +30,7 @@ export class Typechess {
         this.ui = new ChessUi(ui_div);
         this.match = new Match(new Team(SIDE.white), new Team(SIDE.black), this.ai);
 
+        this.match.executeMoveCallback = (activeTeam: Team, cell: Cell) => { return this.executeMove(activeTeam, cell); };
         this.match.updateStatusCallback = (msg: string) => { return this.updateStatus(msg); };
 
         this.setupPieces(this.match.team1);
@@ -38,6 +40,7 @@ export class Typechess {
         this.ui.callback_reset = (e) => { return this.reset(); };
         this.ui.callback_save = (saveName) => { return this.saveGame(saveName); };
         this.ui.callback_undo = (e) => { return this.undoMove(); };
+        this.ui.callback_engage_ai = (side: number, disengage: boolean = false) => { return this.engageAi(side, disengage); };
 
         return this;
     }
@@ -48,11 +51,14 @@ export class Typechess {
     }
 
     click(event: MouseEvent) {
-        let cell = this.board.getCellByPixels(event.offsetX, event.offsetY);
-        let activeTeam = this.match.team1.side == this.match.whosTurn() ? this.match.team1 : this.match.team2;
-        let turnSuccess = false;
+        let cell: Cell = this.board.getCellByPixels(event.offsetX, event.offsetY);
+        let activeTeam: Team = this.match.team1.side == this.match.whosTurn() ? this.match.team1 : this.match.team2;
 
         if(!this.match.checkmate) {
+            // do nothing if it's the ai's turn
+            if(this.match.ai_engaged && activeTeam.side == this.ai.side)
+                return;
+
             // select a piece to move
             if(cell && cell.isOccupied() && cell.piece.side == activeTeam.side) {
                 let piece = cell.piece;
@@ -64,30 +70,7 @@ export class Typechess {
             }
             // move a piece to a possible cell
             else if(activeTeam.activePiece != null && cell.possibleMove) {
-                
-                this.match.startTurn(activeTeam.activePiece, cell);
-                this.board.getCellByCoord(activeTeam.activePiece.getCoord()).piece = null;
-
-                if(activeTeam.activePiece.type == PIECETYPE.king) 
-                {
-                    let king = activeTeam.activePiece as King;
-                    let latestTurn = this.match.turns[this.match.turns.length - 1];
-
-                    latestTurn.castleRookId = king.castleMove(cell, this.board);;
-                }
-                else {
-                    activeTeam.activePiece.move(cell);
-                }
-
-                turnSuccess = this.match.finishTurn();
-                if(!turnSuccess) {
-                    this.undoMove();
-                    // we're assuming the only move you can't really do is to put you're own king in check
-                    this.updateStatus(activeTeam.getSide() + " tried to sacrifice their king!");
-                }
-                
-                this.clearPossible();
-                this.draw();
+                this.executeMove(activeTeam, cell);
             }
             // de-select a piece to move
             else {
@@ -104,6 +87,54 @@ export class Typechess {
             this.match.turns);
     }
 
+    engageAi(sideNum: number, disengage: boolean = false) {
+        let side: string = SIDE[sideNum];
+
+        if(!disengage) {
+            let aiTeam: Team = side == SIDE[SIDE.black] ? this.match.getBlackTeam() : this.match.getWhiteTeam();
+            this.ai.side = aiTeam.side;
+            this.match.ai_engaged = true;
+            
+            if(this.ai.side == this.match.whosTurn()) {
+                let moveTo: Cell = this.ai.takeTurn(aiTeam);
+                this.executeMove(aiTeam, moveTo);
+            }
+        }
+        else {
+            this.ai.side = null;
+            this.match.ai_engaged = false;
+            // console.log("ai disengaged");
+        }
+    }
+
+    executeMove(activeTeam: Team, cell: Cell) {
+        let turnSuccess = false;
+
+        this.match.startTurn(activeTeam.activePiece, cell);
+        this.board.getCellByCoord(activeTeam.activePiece.getCoord()).piece = null;
+
+        if(activeTeam.activePiece.type == PIECETYPE.king) 
+        {
+            let king = activeTeam.activePiece as King;
+            let latestTurn = this.match.turns[this.match.turns.length - 1];
+
+            latestTurn.castleRookId = king.castleMove(cell, this.board);;
+        }
+        else {
+            activeTeam.activePiece.move(cell);
+        }
+
+        turnSuccess = this.match.finishTurn();
+        if(!turnSuccess) {
+            this.undoMove();
+            // we're assuming the only move you can't really make is to put you're own king in check
+            this.updateStatus(activeTeam.getSide() + " tried to sacrifice their king!");
+        }
+        
+        this.clearPossible();
+        this.draw();
+    }
+
     loadGame(savedGame: SaveGame) {
         // let saveGame = JSON.parse(window.localStorage.getItem("Typechess_Save"));
         let modalTitle: string = "Load Game";
@@ -112,7 +143,7 @@ export class Typechess {
             let cell = this.board.getCellByCoord(piece.getCoord());
             
             piece.captured = pieceObj.captured;
-            cell.piece = cell.piece == piece ? null : cell.piece;
+            cell.piece = null; 
             
             if(!piece.captured) {
                 piece.possibleMoves = [pieceObj._coord];

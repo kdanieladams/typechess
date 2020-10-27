@@ -30,6 +30,10 @@ p {
     text-align: justify;
 }
 
+ul li {
+    padding: 5px;
+}
+
 .center {
     text-align: center;
 }

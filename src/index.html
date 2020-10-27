@@ -11,7 +11,15 @@
             <h1><%= htmlWebpackPlugin.options.title %></h1>
             <h3><%= htmlWebpackPlugin.options.version %></h3>
             <p>Simple chess engine written in TypeScript. For now, 
-                there is no AI.  Both sides are human-controlled.</p>
+                there is a rudimentary AI that makes decisions mostly randomly.  
+                If it has an opportunity to capture a piece, it will, no matter what.
+                If it can capture multiple pieces, it will gnab the one with the highest 
+                points value.</p>
+            <ul>
+                <li>Both sides are human-controlled by default.</li>
+                <li>To activate the AI, click on the team you want it to control.</li>
+                <li>Click that team again to disengage it.</li>
+            </ul>
             <p>This is simply my way of figuring out chess for TypeScript, it's 
                 not intended to be redistributable.  If you want a library that is 
                 redistributable to build your own chess game, use the official 

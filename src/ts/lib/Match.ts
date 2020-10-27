@@ -8,18 +8,27 @@ import { Turn } from "./Turn";
 
 
 export class Match {
-    updateStatusCallback;
+    executeMoveCallback: Function;
+    updateStatusCallback: Function;
 
     ai: ChessAi;
     checkmate: boolean = false;
     team1: Team;
     team2: Team;
     turns: Turn[] = new Array();
-
+    ai_engaged: boolean = false;
+    
     constructor(team1: Team, team2: Team, ai: ChessAi) {
         this.ai = ai;
         this.team1 = team1;
         this.team2 = team2;
+    }
+
+    private _executeMove(activeTeam: Team, cell: Cell) {
+        if(typeof(this.executeMoveCallback) == 'function')
+            return this.executeMoveCallback(activeTeam, cell);
+        
+        return false;
     }
 
     private _updateStatus(msg: string) {
@@ -38,14 +47,11 @@ export class Match {
         let nextTeam = this.team1.side == this.whosTurn() ? this.team1 : this.team2;
         let prevTeam = nextTeam.side == this.team1.side ? this.team2 : this.team1;
 
-        if(this.isTeamInCheck(prevTeam)) {
-            // this.checkmate = this.ai.detectCheckMate(prevTeam, nextTeam);
-            // this._updateStatus(prevTeam.getSide() + "\'s king is in check!");            
+        if(this.isTeamInCheck(prevTeam, true)) {     
             return false;
         }
-        else if(this.isTeamInCheck(nextTeam) && !this.checkmate) {
+        else if(this.isTeamInCheck(nextTeam, true) && !this.checkmate) {
             this.checkmate = this.ai.detectCheckMate(nextTeam, prevTeam);
-            this._updateStatus(nextTeam.getSide() + "\'s king is in check!");
         }
 
         if(this.checkmate) {
@@ -53,6 +59,14 @@ export class Match {
             this._updateStatus("CHECKMATE!!! " + prevTeam.getSide() + " wins!");
             capturedKing.captured = true;
             prevTeam.captures.push(capturedKing);
+        }
+
+        // if this is an ai game, trigger the ai turn...
+        if(this.ai_engaged && this.whosTurn() == this.ai.side) {
+            let aiTeam: Team = this.ai.side == SIDE.white ? this.getWhiteTeam() : this.getBlackTeam(),
+                moveTo: Cell = this.ai.takeTurn(aiTeam);
+
+            this._executeMove(aiTeam, moveTo);
         }
 
         return true;

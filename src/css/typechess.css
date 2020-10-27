@@ -104,11 +104,13 @@
 
 #chess_ui div.score span {
     padding: 10px 0;
+    cursor: pointer;
 }
 
 #chess_ui div.score .score-hdr {
     display: block;
     text-align: right;
+    line-height: 1.15em;
 }
 
 #chess_ui div.score .score-hdr.white.active,
