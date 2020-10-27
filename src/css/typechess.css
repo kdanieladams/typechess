@@ -32,13 +32,15 @@
 #chess_ui aside button {
     display: block;
     width: 100%;
-    margin: 0 0 15px;
+    margin: 0 0 8px;
+    padding: 5px;
+    cursor: pointer;
     background-color: #333;
     color: #919191;
     border: solid 1px #555;
-    padding: 5px;
     border-radius: 7px;
-    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
 }
 
 #chess_ui aside button:active {
@@ -149,6 +151,7 @@
 
 #chess_ui ul.msgs li {
     margin: 0 0 5px;
+    list-style: none;
 }
 
 #chess_ui ul.msgs li:first-child {

@@ -38,10 +38,14 @@ export class Match {
         let nextTeam = this.team1.side == this.whosTurn() ? this.team1 : this.team2;
         let prevTeam = nextTeam.side == this.team1.side ? this.team2 : this.team1;
 
-        if(this.isTeamInCheck(prevTeam))
+        if(this.isTeamInCheck(prevTeam)) {
             this.checkmate = this.ai.detectCheckMate(prevTeam, nextTeam);
-        else if(this.isTeamInCheck(nextTeam) && !this.checkmate)
+            this._updateStatus(prevTeam.getSide() + "\'s king is in check!");
+        }
+        else if(this.isTeamInCheck(nextTeam) && !this.checkmate) {
             this.checkmate = this.ai.detectCheckMate(nextTeam, prevTeam);
+            this._updateStatus(nextTeam.getSide() + "\'s king is in check!");
+        }
 
         if(this.checkmate) {
             let capturedKing: King = nextTeam.getPieceById(15) as King;

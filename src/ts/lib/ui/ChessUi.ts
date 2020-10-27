@@ -69,7 +69,6 @@ export class ChessUi {
             });
         };
 
-        // resetBtn.onclick = typeof(this.callback_reset) == 'function' ? this.callback_reset : this._click_fallback;
         resetBtn.onclick = (e) => {
             this._click_reset(e).then((value) => {
                 if(value === true) {
@@ -83,7 +82,10 @@ export class ChessUi {
 
         undoBtn.onclick = typeof(this.callback_undo) == 'function' ? this.callback_undo : this._click_fallback;
 
-        aside.append(saveBtn, loadBtn, resetBtn, undoBtn);
+        aside.appendChild(saveBtn);
+        aside.appendChild(loadBtn);
+        aside.appendChild(resetBtn);
+        aside.appendChild(undoBtn);
         this._ui_div.appendChild(aside);
     }
 
@@ -95,7 +97,8 @@ export class ChessUi {
         score_h4.innerHTML = "Score";
         msgs_h4.innerHTML = "Game Log";
         
-        header.append(score_h4, msgs_h4);
+        header.appendChild(score_h4)
+        header.appendChild(msgs_h4);
         this._ui_div.appendChild(header);
     }
 
