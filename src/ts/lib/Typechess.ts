@@ -82,6 +82,7 @@ export class Typechess {
                 turnSuccess = this.match.finishTurn();
                 if(!turnSuccess) {
                     this.undoMove();
+                    // we're assuming the only move you can't really do is to put you're own king in check
                     this.updateStatus(activeTeam.getSide() + " tried to sacrifice their king!");
                 }
                 

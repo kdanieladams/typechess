@@ -54,9 +54,12 @@ export class ChessUi {
         loadBtn.onclick = (e) => {
             this._click_load(e).then((params) => {
                 if(typeof(params) == 'object' && params.name){
-                    let savedGame = JSON.parse(window.localStorage.getItem(SAVEGAMEPREFIX + "_" + params.name)) as SaveGame;
+                    let saveGameKey = SAVEGAMEPREFIX + "_" + params.name,
+                        savedGame = JSON.parse(window.localStorage.getItem(saveGameKey)) as SaveGame;
+                    
                     if(params.delete) {
-                        console.log('delete game: ' + savedGame.name);
+                        // console.log('delete game: ' + savedGame.name);
+                        this._delete_game(params.name, saveGameKey, loadBtn);
                     }
                     else {
                         // console.log('load game: ' + savedGame.name);
@@ -165,6 +168,16 @@ export class ChessUi {
             }
         }
 
+        saveGames.sort((a: SaveGame, b: SaveGame) => {
+            if(a.saveDate > b.saveDate)
+                return -1;
+
+            if(a.saveDate < b.saveDate)
+                return 1;
+
+            return 0;
+        });
+
         msg.innerHTML = "Choose a game to load:";
         saveGames.forEach((saveGame, i) => {
             let formGroup = document.createElement("div"),
@@ -258,6 +271,24 @@ export class ChessUi {
             }
 
             return false;
+        });
+    }
+
+    private _delete_game(saveGameName: string, saveGameKey: string, loadBtn: HTMLButtonElement) {
+        let confirmModal: Modal,
+            successModal: Modal,
+            modalTitle = "Delete Game";
+
+        confirmModal = new Modal(modalTitle, "Are you sure you want to delete \'" + saveGameName + "\'?", ["Cancel", "Delete it"], true);
+        confirmModal.show().then((confirmDelete) => {
+            if(confirmDelete) {
+                window.localStorage.removeItem(saveGameKey);
+                successModal = new Modal(modalTitle, "\'" + saveGameName + "\' was successfully deleted.");
+                successModal.show();
+            }
+            else {
+                loadBtn.click();
+            }
         });
     }
 
