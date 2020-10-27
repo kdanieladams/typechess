@@ -27,7 +27,7 @@ describe('Test Piece', () => {
             let canvas;
             let dom = new JSDOM(`<!DOCTYPE html><canvas id="test_canvas" width="100" height="100"></canvas><img id="test_img" src="pieces.png">`,{
                 resources: 'usable',
-                url: 'file:///C:/Users/Dan/Dev/Repos/typechess/dist/'
+                url: 'file:///' + __dirname + '/../dist/'
             });
 
             document = dom.window.document,
