@@ -39,8 +39,9 @@ export class Match {
         let prevTeam = nextTeam.side == this.team1.side ? this.team2 : this.team1;
 
         if(this.isTeamInCheck(prevTeam)) {
-            this.checkmate = this.ai.detectCheckMate(prevTeam, nextTeam);
-            this._updateStatus(prevTeam.getSide() + "\'s king is in check!");
+            // this.checkmate = this.ai.detectCheckMate(prevTeam, nextTeam);
+            // this._updateStatus(prevTeam.getSide() + "\'s king is in check!");            
+            return false;
         }
         else if(this.isTeamInCheck(nextTeam) && !this.checkmate) {
             this.checkmate = this.ai.detectCheckMate(nextTeam, prevTeam);
@@ -53,6 +54,8 @@ export class Match {
             capturedKing.captured = true;
             prevTeam.captures.push(capturedKing);
         }
+
+        return true;
     }
 
     getBlackTeam() {

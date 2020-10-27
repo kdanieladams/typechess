@@ -50,6 +50,7 @@ export class Typechess {
     click(event: MouseEvent) {
         let cell = this.board.getCellByPixels(event.offsetX, event.offsetY);
         let activeTeam = this.match.team1.side == this.match.whosTurn() ? this.match.team1 : this.match.team2;
+        let turnSuccess = false;
 
         if(!this.match.checkmate) {
             // select a piece to move
@@ -78,7 +79,12 @@ export class Typechess {
                     activeTeam.activePiece.move(cell);
                 }
 
-                this.match.finishTurn();
+                turnSuccess = this.match.finishTurn();
+                if(!turnSuccess) {
+                    this.undoMove();
+                    this.updateStatus(activeTeam.getSide() + " tried to sacrifice their king!");
+                }
+                
                 this.clearPossible();
                 this.draw();
             }
