@@ -97,7 +97,7 @@ export class ChessAi {
                 }
             });
 
-            // determine move to make 
+            // determine move to make based on attack value
             if(attackingPieces.length > 0) {
                 let move: any;
 
@@ -114,7 +114,7 @@ export class ChessAi {
                 return this.board.getCellByCoord(move.coord);
             }
             
-            // determine move to make 
+            // determine move to make randomly
             rndIndex = Math.floor(Math.random() * movingPieces.length);
             team.activePiece = movingPieces[rndIndex];
 

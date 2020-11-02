@@ -153,6 +153,7 @@
 
 #chess_ui ul.msgs li {
     margin: 0 0 5px;
+    padding: 0;
     list-style: none;
 }
 

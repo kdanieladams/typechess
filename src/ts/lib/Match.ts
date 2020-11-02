@@ -59,6 +59,8 @@ export class Match {
             this._updateStatus("CHECKMATE!!! " + prevTeam.getSide() + " wins!");
             capturedKing.captured = true;
             prevTeam.captures.push(capturedKing);
+
+            return true;
         }
 
         // if this is an ai game, trigger the ai turn...
@@ -66,7 +68,7 @@ export class Match {
             let aiTeam: Team = this.ai.side == SIDE.white ? this.getWhiteTeam() : this.getBlackTeam(),
                 moveTo: Cell = this.ai.takeTurn(aiTeam);
 
-            this._executeMove(aiTeam, moveTo);
+            return this._executeMove(aiTeam, moveTo);
         }
 
         return true;

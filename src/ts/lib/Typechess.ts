@@ -129,10 +129,12 @@ export class Typechess {
             this.undoMove();
             // we're assuming the only move you can't really make is to put you're own king in check
             this.updateStatus(activeTeam.getSide() + " tried to sacrifice their king!");
+            return false;
         }
         
         this.clearPossible();
         this.draw();
+        return true;
     }
 
     loadGame(savedGame: SaveGame) {
