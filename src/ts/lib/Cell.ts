@@ -1,4 +1,4 @@
-import { FILE, GETENUMKEY, NUMRANKS } from '../globals';
+import { FILE, NUMRANKS } from '../globals';
 import { Piece } from './pieces/_Piece';
 
 /**
@@ -27,7 +27,7 @@ export class Cell {
     }
 
     getFile() {
-        return GETENUMKEY(FILE, this.file);
+        return FILE[this.file];
     }
     
     getCoord() {

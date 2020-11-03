@@ -1,4 +1,4 @@
-import { CAPITALIZE, FILE, GETENUMKEY, PIECESPRITEWIDTH, PIECETYPE, SIDE } from '../../globals';
+import { CAPITALIZE, FILE, PIECESPRITEWIDTH, PIECETYPE, SIDE } from '../../globals';
 import { Board } from '../Board';
 import { Cell } from '../Cell';
 
@@ -94,11 +94,11 @@ export abstract class Piece {
     }
 
     getPieceType() {
-        return CAPITALIZE(GETENUMKEY(PIECETYPE, this.type));
+        return CAPITALIZE(PIECETYPE[this.type])
     }
 
     getSide() {
-        return CAPITALIZE(GETENUMKEY(SIDE, this.side));
+        return CAPITALIZE(SIDE[this.side]);
     }
 
     overrideCoord(coord: string) {

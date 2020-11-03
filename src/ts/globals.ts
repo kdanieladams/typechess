@@ -71,19 +71,3 @@ export const SAVEGAMEPREFIX = config.saveGamePrefix;
 export const CAPITALIZE = function(str: string){
     return str.charAt(0).toUpperCase() + str.slice(1);
 };
-
-export const GETENUMKEY = function(enumerable: any, index: number) {
-    let keys = Object.keys(enumerable),
-        ret: any;
-
-    keys.forEach((key, i) => {
-        let member = enumerable[key],
-            isValueProperty = parseInt(member, 10) >= 0;
-
-        if (isValueProperty && (i - (keys.length / 2)) == index) {
-            ret = enumerable[member];
-        }
-    });
-
-    return ret;
-}

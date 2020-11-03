@@ -1,4 +1,4 @@
-import { CANVASMARGIN, CANVASWIDTH, GETENUMKEY, SAVEGAMEPREFIX, SIDE } from '../../globals';
+import { CANVASMARGIN, CANVASWIDTH, SAVEGAMEPREFIX, SIDE } from '../../globals';
 import { ButtonList } from './_ButtonOptions';
 import { Modal } from './Modal';
 import { SaveGame } from './SaveGame';

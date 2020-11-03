@@ -1,4 +1,4 @@
-import { FILE, GETENUMKEY, PIECETYPE, SAVEGAMEPREFIX, SIDE } from '../globals';
+import { FILE, PIECETYPE, SAVEGAMEPREFIX, SIDE } from '../globals';
 import { Board } from './Board';
 import { ChessAi } from './ChessAi';
 import { ChessUi } from './ui/ChessUi';

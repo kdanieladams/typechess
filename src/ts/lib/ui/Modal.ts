@@ -142,11 +142,10 @@ export class Modal {
 
             // add btns
             this.button_options.forEach((button, index) => {
-                let btn: HTMLButtonElement = document.createElement("button"),
-                    isPrimaryBtn: boolean = (index == 0 && this.button_options.length == 1 || index == this.button_options.length - 1);
+                let btn: HTMLButtonElement = document.createElement("button");
 
                 // check for danger mode, change confirm_btn.className to suit
-                if(isPrimaryBtn) {
+                if(index == 0 && this.button_options.length == 1 || index == this.button_options.length - 1) {
                     btn.classList.add("confirm");
                     if(this.dangerMode) {
                         btn.classList.add("danger");
