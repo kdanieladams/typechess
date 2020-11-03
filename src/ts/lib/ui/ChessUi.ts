@@ -1,5 +1,5 @@
 import { CANVASMARGIN, CANVASWIDTH, GETENUMKEY, SAVEGAMEPREFIX, SIDE } from '../../globals';
-import { ButtonList } from 'sweetalert/typings/modules/options/buttons';
+import { ButtonList } from './_ButtonOptions';
 import { Modal } from './Modal';
 import { SaveGame } from './SaveGame';
 import { Turn } from '../Turn';
@@ -226,7 +226,7 @@ export class ChessUi {
             delete: {
                 text: "Delete",
                 value: "delete",
-                className: "swal-button--danger"
+                className: "danger"
             },
             confirm: {
                 text: "Load Game",

@@ -32,8 +32,5 @@
     "do_tests": "mocha --require jsdom-global/register --require ts-node/register tests/**/*.spec.ts",
     "start": "webpack-dev-server --config config/webpack.dev.js",
     "build": "webpack --config config/webpack.prod.js"
-  },
-  "dependencies": {
-    "sweetalert": "^2.1.2"
   }
 }
