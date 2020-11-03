@@ -26,6 +26,7 @@ export class King extends Piece {
         let rank = parseInt(this._coord[1]);
         let testMoves = new Array();
 
+        this.active = true;
         this.possibleMoves = [];
 
         // can castle king-side?
