@@ -12,8 +12,8 @@ export class Rook extends Piece {
     ];
     value = 550;
 
-    constructor(side: SIDE, id: number) {
-        super(side, PIECETYPE.rook, id);
+    constructor(side: SIDE) {
+        super(side, PIECETYPE.rook);
 
         // init possible starting locations
         this.possibleMoves = this.origCoord;

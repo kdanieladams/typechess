@@ -14,8 +14,8 @@ export class King extends Piece {
     ];
     value = 50000;
 
-    constructor(side: SIDE, id: number) {
-        super(side, PIECETYPE.king, id);
+    constructor(side: SIDE) {
+        super(side, PIECETYPE.king);
 
         // init possible starting locations
         this.possibleMoves = this.origCoord;

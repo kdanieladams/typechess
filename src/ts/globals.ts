@@ -71,3 +71,13 @@ export const SAVEGAMEPREFIX = config.saveGamePrefix;
 export const CAPITALIZE = function(str: string){
     return str.charAt(0).toUpperCase() + str.slice(1);
 };
+
+export const GENERATE_GUID = function() {
+    let guid: string = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
+    return guid.replace(/x/g, function(){
+            return  (Math.random()*16|0).toString(16)
+        })
+        .replace(/y/, function(){
+            return  (Math.random()*4+8|0).toString(16)
+        });
+};

@@ -16,8 +16,8 @@ export class Pawn extends Piece {
     ];
     value = 100;
 
-    constructor(side: SIDE, id: number) {
-        super(side, PIECETYPE.pawn, id);
+    constructor(side: SIDE) {
+        super(side, PIECETYPE.pawn);
 
         // init possible starting locations
         this.possibleMoves = this.origCoord;
@@ -75,12 +75,8 @@ export class Pawn extends Piece {
 
     move(cell: Cell) {
         if(super.move(cell)) {
-            if((this.side == SIDE.black && cell.rank != 7) 
-                || (this.side == SIDE.white && cell.rank != 2)) 
-            {
-                this.hasMoved = true;
-                return true;
-            }
+            this.hasMoved = true;
+            return true;
         }
 
         return false;

@@ -185,7 +185,7 @@ export class Typechess {
         if(savedGame.turns && savedGame.turns instanceof Array) {
             savedGame.turns.forEach(turnObj => {
                 let team = turnObj.side == SIDE.white ? this.match.getWhiteTeam() : this.match.getBlackTeam();
-                let piece = team.getPieceById((turnObj.movedPiece as any)._id);
+                let piece = team.getPieceById((turnObj.movedPiece as any)._id) || team.pieces[(turnObj.movedPiece as any)._id];
                 let startCoord = piece.getCoord();
                 let turn: Turn;
 

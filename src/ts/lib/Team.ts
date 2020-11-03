@@ -1,4 +1,4 @@
-import { CAPITALIZE, SIDE } from '../globals';
+import { CAPITALIZE, GENERATE_GUID, PIECETYPE, SIDE } from '../globals';
 import { Bishop } from './pieces/Bishop';
 import { King } from './pieces/King';
 import { Pawn } from './pieces/Pawn';
@@ -18,33 +18,33 @@ export class Team {
         this.side = side == SIDE.white ? SIDE.white : SIDE.black;
         
         // pawns
-        this.pieces.push(new Pawn(this.side, 0));   // 0
-        this.pieces.push(new Pawn(this.side, 1));   // 1
-        this.pieces.push(new Pawn(this.side, 2));   // 2
-        this.pieces.push(new Pawn(this.side, 3));   // 3
-        this.pieces.push(new Pawn(this.side, 4));   // 4
-        this.pieces.push(new Pawn(this.side, 5));   // 5
-        this.pieces.push(new Pawn(this.side, 6));   // 6
-        this.pieces.push(new Pawn(this.side, 7));   // 7
+        this.pieces.push(new Pawn(this.side)); 
+        this.pieces.push(new Pawn(this.side)); 
+        this.pieces.push(new Pawn(this.side)); 
+        this.pieces.push(new Pawn(this.side)); 
+        this.pieces.push(new Pawn(this.side)); 
+        this.pieces.push(new Pawn(this.side)); 
+        this.pieces.push(new Pawn(this.side)); 
+        this.pieces.push(new Pawn(this.side)); 
 
         // rooks
-        this.pieces.push(new Rook(this.side, 8));   // 8
-        this.pieces.push(new Rook(this.side, 9));   // 9
+        this.pieces.push(new Rook(this.side)); 
+        this.pieces.push(new Rook(this.side)); 
 
         // knights
-        this.pieces.push(new Knight(this.side, 10)); // 10
-        this.pieces.push(new Knight(this.side, 11)); // 11
+        this.pieces.push(new Knight(this.side));
+        this.pieces.push(new Knight(this.side));
 
         // bishops
-        this.pieces.push(new Bishop(this.side, 12)); // 12
-        this.pieces.push(new Bishop(this.side, 13)); // 13
+        this.pieces.push(new Bishop(this.side));
+        this.pieces.push(new Bishop(this.side));
 
         // royalty
-        this.pieces.push(new Queen(this.side, 14));  // 14
-        this.pieces.push(new King(this.side, 15));   // 15
+        this.pieces.push(new Queen(this.side)); 
+        this.pieces.push(new King(this.side));  
     }
 
-    clearPossible() {
+    clearPossible(): void {
         this.activePiece = null;
         this.pieces.forEach(piece => {
             piece.active = false;
@@ -52,17 +52,19 @@ export class Team {
         });
     }
 
-    getPieceById(id: number) {
-        if(id >= 0 && id <= 15) {
-            return this.pieces.find(piece => piece.getId() == id);
-        }
+    getPieceById(id: string): Piece {
+        return this.pieces.find(piece => piece.getId() == id);
     }
 
-    getSide() {
+    getPieceByType(type: number): Piece {
+        return this.pieces.find(piece => piece.type == type);
+    }
+
+    getSide(): string {
         return CAPITALIZE(SIDE[this.side]);
     }
 
-    getScore() {
+    getScore(): number {
         var score = 0;
 
         for(let i = 0; i < this.captures.length; i++) {

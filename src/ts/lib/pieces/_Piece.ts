@@ -1,4 +1,4 @@
-import { CAPITALIZE, FILE, PIECESPRITEWIDTH, PIECETYPE, SIDE } from '../../globals';
+import { CAPITALIZE, FILE, GENERATE_GUID, PIECESPRITEWIDTH, PIECETYPE, SIDE } from '../../globals';
 import { Board } from '../Board';
 import { Cell } from '../Cell';
 
@@ -7,7 +7,7 @@ export abstract class Piece {
     // protected _cell: Cell = null;
     protected _coord: string = '';
     protected _forward = 1;
-    protected _id: number;
+    protected _id: string;
 
     // public
     active = false;
@@ -17,11 +17,11 @@ export abstract class Piece {
     type = PIECETYPE.pawn;
     value = 100;
 
-    constructor(side: SIDE, type: PIECETYPE, id: number) {
+    constructor(side: SIDE, type: PIECETYPE) {
         this.side = side;
         this.type = type;
         this._forward = this.side == SIDE.white ? 1 : -1; // -1 = down, 1 = up
-        this._id = id;
+        this._id = GENERATE_GUID();
     }
 
     private _iterateMoves(board: Board, coord: string, incFile: number, incRank: number) {

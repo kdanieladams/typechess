@@ -1,5 +1,5 @@
 Typechess Automated Testing 
-Mon 10/26/2020 23:30:38.93 
+Tue 11/03/2020 16:10:40.51 
 
 
   Test Board
@@ -52,5 +52,5 @@ Mon 10/26/2020 23:30:38.93
       √ should return an array of coordinates conforming to a forward right diagonal line
 
 
-  26 passing (62ms)
+  26 passing (67ms)
 

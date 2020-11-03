@@ -60,5 +60,5 @@ export const PieceFactory = function(customSide?: SIDE) {
         : (Math.floor(Math.random() * 2) + 1 == 1 ? SIDE.white : SIDE.black);
     // let type = PIECETYPE[Math.floor(Math.random() * Object.keys(PIECETYPE).length) + 1];
     
-    return new Pawn(side, 0);
+    return new Pawn(side);
 };

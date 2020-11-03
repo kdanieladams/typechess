@@ -1,4 +1,4 @@
-import { SIDE } from "../globals";
+import { PIECETYPE, SIDE } from "../globals";
 import { Cell } from "./Cell";
 import { ChessAi } from "./ChessAi";
 import { King } from "./pieces/King";
@@ -52,15 +52,15 @@ export class Match {
         }
         else if(this.isTeamInCheck(nextTeam, true) && !this.checkmate) {
             this.checkmate = this.ai.detectCheckMate(nextTeam, prevTeam);
-        }
+            
+            if(this.checkmate) {
+                let capturedKing: King = nextTeam.getPieceByType(PIECETYPE.king) as King;
+                this._updateStatus("CHECKMATE!!! " + prevTeam.getSide() + " wins!");
+                capturedKing.captured = true;
+                prevTeam.captures.push(capturedKing);
 
-        if(this.checkmate) {
-            let capturedKing: King = nextTeam.getPieceById(15) as King;
-            this._updateStatus("CHECKMATE!!! " + prevTeam.getSide() + " wins!");
-            capturedKing.captured = true;
-            prevTeam.captures.push(capturedKing);
-
-            return true;
+                return true;
+            }
         }
 
         // if this is an ai game, trigger the ai turn...

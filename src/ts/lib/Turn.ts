@@ -13,7 +13,7 @@ export class Turn {
     side: SIDE = null;
     startCoord: string = '';
     msgs: string[] = new Array();
-    castleRookId: number = null;
+    castleRookId: string = null;
     
     constructor(piece: Piece, moveTo: string) {
         if(moveTo.length == 2) {

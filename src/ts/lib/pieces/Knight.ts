@@ -8,8 +8,8 @@ import { Piece } from './_Piece';
 export class Knight extends Piece {
     value = 325;
 
-    constructor(side: SIDE, id: number) {
-        super(side, PIECETYPE.knight, id);
+    constructor(side: SIDE) {
+        super(side, PIECETYPE.knight);
 
         // init possible starting locations
         this.possibleMoves = [
