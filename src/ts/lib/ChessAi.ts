@@ -7,18 +7,30 @@ import { Piece } from './pieces/_Piece';
 import { Team } from './Team';
 
 export class ChessAi {
-    board: Board;
+    private _executeMoveCallback: Function;
+    private _board: Board;
+    
     side: number;
     
-    constructor(board: Board) {
-        this.board = board;
+    constructor(board: Board, executeCallbackFunc?: Function) {
+        this._board = board;
+
+        if(executeCallbackFunc)
+            this._executeMoveCallback = executeCallbackFunc;
+    }
+
+    private _executeMove(activeTeam: Team, cell: Cell) {
+        if(typeof(this._executeMoveCallback) == 'function')
+            return this._executeMoveCallback(activeTeam, cell);
+        
+        return false;
     }
 
     detectCheck(kingCoord: string, assaultTeam: Team) {
         for(let i = 0; i < assaultTeam.pieces.length; i ++){
             let piece: Piece = assaultTeam.pieces[i];
             if(!piece.captured) {
-                piece.canMove(this.board);
+                piece.canMove(this._board);
                 if(piece.possibleMoves.includes(kingCoord)) {
                     return true;
                 }
@@ -33,12 +45,12 @@ export class ChessAi {
 
         defTeam.pieces.forEach(piece => {
             let coords: string[] = new Array(),
-                startCell: Cell = this.board.getCellByCoord(piece.getCoord());
+                startCell: Cell = this._board.getCellByCoord(piece.getCoord());
             
             if(!piece.captured) {
-                coords = piece.canMove(this.board);
+                coords = piece.canMove(this._board);
                 coords.forEach(coord => {
-                    let endCell: Cell = this.board.getCellByCoord(coord),
+                    let endCell: Cell = this._board.getCellByCoord(coord),
                         origPiece: Piece = endCell.piece,
                         kingCoord: string, 
                         hasMoved: boolean = false; 
@@ -72,20 +84,21 @@ export class ChessAi {
         return checkMate;
     }
 
-    takeTurn(team: Team): Cell {
+    takeTurn(team: Team): boolean {
         if(this.side !== null) {
             let movingPieces: Array<Piece> = [],
                 attackingPieces: Array<any> = [],
                 rndIndex: number,
-                moveTo: string;
+                moveTo: string,
+                moveToCell: Cell;
             
             // determine piece to move
             team.pieces.forEach((piece, i) => {
-                let moves: Array<string> = piece.canMove(this.board);
+                let moves: Array<string> = piece.canMove(this._board);
                 if(moves.length > 0 && !piece.captured) {
                     movingPieces.push(piece);
                     moves.forEach((coord: string) => {
-                        let cell: Cell = this.board.getCellByCoord(coord);
+                        let cell: Cell = this._board.getCellByCoord(coord);
                         if(cell.isOccupied()) {
                             attackingPieces.push({
                                 "piece": piece,
@@ -109,20 +122,25 @@ export class ChessAi {
                 
                 move = attackingPieces[0];
                 team.activePiece = move.piece;
-                
-                // trigger startTurn on match
-                return this.board.getCellByCoord(move.coord);
+                moveToCell = this._board.getCellByCoord(move.coord);
             }
-            
-            // determine move to make randomly
-            rndIndex = Math.floor(Math.random() * movingPieces.length);
-            team.activePiece = movingPieces[rndIndex];
+            else {
+                // determine move to make randomly
+                rndIndex = Math.floor(Math.random() * movingPieces.length);
+                team.activePiece = movingPieces[rndIndex];
 
-            rndIndex = Math.floor(Math.random() * team.activePiece.possibleMoves.length);
-            moveTo = team.activePiece.possibleMoves[rndIndex];
+                rndIndex = Math.floor(Math.random() * team.activePiece.possibleMoves.length);
+                moveTo = team.activePiece.possibleMoves[rndIndex];
+                moveToCell = this._board.getCellByCoord(moveTo);
+            }
 
-            // trigger startTurn on match
-            return this.board.getCellByCoord(moveTo);
+            let testexec = this._executeMoveCallback(team, moveToCell);
+
+            if(!testexec) {
+                return this.takeTurn(team);
+            }
+
+            return true;
         }
     }
 }

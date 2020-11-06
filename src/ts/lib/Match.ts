@@ -24,13 +24,6 @@ export class Match {
         this.team2 = team2;
     }
 
-    private _executeMove(activeTeam: Team, cell: Cell) {
-        if(typeof(this.executeMoveCallback) == 'function')
-            return this.executeMoveCallback(activeTeam, cell);
-        
-        return false;
-    }
-
     private _updateStatus(msg: string) {
         if(typeof(this.updateStatusCallback) == 'function')
             return this.updateStatusCallback(msg);
@@ -52,7 +45,7 @@ export class Match {
         }
         else if(this.isTeamInCheck(nextTeam, true) && !this.checkmate) {
             this.checkmate = this.ai.detectCheckMate(nextTeam, prevTeam);
-            
+
             if(this.checkmate) {
                 let capturedKing: King = nextTeam.getPieceByType(PIECETYPE.king) as King;
                 this._updateStatus("CHECKMATE!!! " + prevTeam.getSide() + " wins!");
@@ -65,10 +58,8 @@ export class Match {
 
         // if this is an ai game, trigger the ai turn...
         if(this.ai_engaged && this.whosTurn() == this.ai.side) {
-            let aiTeam: Team = this.ai.side == SIDE.white ? this.getWhiteTeam() : this.getBlackTeam(),
-                moveTo: Cell = this.ai.takeTurn(aiTeam);
-
-            return this._executeMove(aiTeam, moveTo);
+            let aiTeam: Team = this.ai.side == SIDE.white ? this.getWhiteTeam() : this.getBlackTeam();
+            this.ai.takeTurn(aiTeam);
         }
 
         return true;

@@ -75,8 +75,12 @@ export class Pawn extends Piece {
 
     move(cell: Cell) {
         if(super.move(cell)) {
-            this.hasMoved = true;
-            return true;
+            if((this.side == SIDE.black && cell.rank != 7) 
+                || (this.side == SIDE.white && cell.rank != 2)) 
+            {
+                this.hasMoved = true;
+                return true;
+            }
         }
 
         return false;

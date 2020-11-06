@@ -26,11 +26,10 @@ export class Typechess {
 
     constructor(canvas: HTMLCanvasElement, pieces_img: HTMLImageElement, ui_div: HTMLDivElement) {
         this.board = new Board(canvas, pieces_img);
-        this.ai = new ChessAi(this.board);
-        this.ui = new ChessUi(ui_div);
+        this.ai = new ChessAi(this.board, (aiTeam, moveTo) => { return this.executeMove(aiTeam, moveTo); });
         this.match = new Match(new Team(SIDE.white), new Team(SIDE.black), this.ai);
+        this.ui = new ChessUi(ui_div);
 
-        this.match.executeMoveCallback = (activeTeam: Team, cell: Cell) => { return this.executeMove(activeTeam, cell); };
         this.match.updateStatusCallback = (msg: string) => { return this.updateStatus(msg); };
 
         this.setupPieces(this.match.team1);
@@ -96,8 +95,7 @@ export class Typechess {
             this.match.ai_engaged = true;
             
             if(this.ai.side == this.match.whosTurn()) {
-                let moveTo: Cell = this.ai.takeTurn(aiTeam);
-                this.executeMove(aiTeam, moveTo);
+                this.ai.takeTurn(aiTeam);
             }
         }
         else {
@@ -107,7 +105,7 @@ export class Typechess {
         }
     }
 
-    executeMove(activeTeam: Team, cell: Cell) {
+    executeMove(activeTeam: Team, cell: Cell): boolean {
         let turnSuccess = false;
 
         this.match.startTurn(activeTeam.activePiece, cell);
