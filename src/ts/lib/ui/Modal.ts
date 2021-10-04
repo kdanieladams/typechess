@@ -18,8 +18,7 @@ export class Modal {
     dangerMode: boolean = false;
 
     constructor()
-    constructor(title: string, msg: HTMLElement)
-    constructor(title: string, msg: string)
+    constructor(title: string, msg: string | HTMLElement)
     constructor(title: string, msg: string | HTMLElement, buttons: ButtonList | Array<string | boolean>)
     constructor(title: string, msg: string | HTMLElement, buttons: ButtonList | Array<string | boolean>, dangerMode: boolean)
     constructor(title?: string, msg?: string | HTMLElement, buttons?: ButtonList | Array<string | boolean>, dangerMode?: boolean) 

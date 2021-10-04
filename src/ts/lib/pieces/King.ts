@@ -46,7 +46,7 @@ export class King extends Piece {
             }
         }
 
-        // can castle queen-size?
+        // can castle queen-side?
         if(!this.hasMoved 
             && !board.getCellByCoord('d' + rank).isOccupied()
             && !board.getCellByCoord('c' + rank).isOccupied()

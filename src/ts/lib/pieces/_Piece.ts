@@ -76,11 +76,12 @@ export abstract class Piece {
 
     getDiagMoves(board: Board, forward: boolean, right: boolean) {
         let coord = this.getCoord(), 
-            incFile = right ? 1 : -1, 
-            incRank = (forward ? 1 : -1) * this._forward;
+            file = right ? 1 : -1, 
+            rank = (forward ? 1 : -1) * this._forward;
 
-        return this._iterateMoves(board, coord, incFile, incRank);
+        return this._iterateMoves(board, coord, file, rank);
     }
+
     getId() {
         return this._id;
     }
@@ -116,5 +117,10 @@ export abstract class Piece {
         }
 
         return false;
+    }
+
+    translateFromJson(pieceObj): Piece {
+        Object.assign(this, pieceObj);        
+        return this;
     }
 }

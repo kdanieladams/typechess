@@ -1,4 +1,4 @@
-import { CAPITALIZE, GENERATE_GUID, PIECETYPE, SIDE } from '../globals';
+import { CAPITALIZE, PIECETYPE, SIDE } from '../globals';
 import { Bishop } from './pieces/Bishop';
 import { King } from './pieces/King';
 import { Pawn } from './pieces/Pawn';
@@ -73,5 +73,57 @@ export class Team {
         }
 
         return score;
+    }
+
+    createNewPiece(pieceObj): Piece {
+        let newPiece: Piece;
+
+        if(pieceObj) {
+            switch(pieceObj.type) {
+                case PIECETYPE.pawn: 
+                    newPiece = new Pawn(this.side); 
+                    break;
+                case PIECETYPE.rook:
+                    newPiece = new Rook(this.side); 
+                    break;
+                case PIECETYPE.knight:
+                    newPiece = new Knight(this.side); 
+                    break;
+                case PIECETYPE.bishop:
+                    newPiece = new Bishop(this.side); 
+                    break;
+                case PIECETYPE.queen:
+                    newPiece = new Queen(this.side); 
+                    break;
+                case PIECETYPE.king:
+                    newPiece = new King(this.side); 
+                    break;
+            }
+        }
+
+        return newPiece;
+    }
+
+    translateFromJson(teamObj): Team {
+        Object.assign(this, teamObj);
+        
+        this.activePiece = null;
+        this.activePiece = this.createNewPiece(teamObj.activePiece);
+
+        this.pieces = [];
+        teamObj.pieces.forEach(pieceObj => {
+            let newPiece : Piece = this.createNewPiece(pieceObj);
+            newPiece = newPiece.translateFromJson(pieceObj);
+            this.pieces.push(newPiece);
+        });
+
+        this.captures = [];
+        teamObj.captures.forEach(pieceObj => {
+            let capturedPiece : Piece = this.createNewPiece(pieceObj);
+            capturedPiece = capturedPiece.translateFromJson(pieceObj);
+            this.captures.push(capturedPiece);
+        });
+        
+        return this;
     }
 }

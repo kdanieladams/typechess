@@ -1,4 +1,4 @@
-import { CANVASMARGIN, CANVASWIDTH, SAVEGAMEPREFIX, SIDE } from '../../globals';
+import { CANVASWIDTH, SAVEGAMEPREFIX, SIDE } from '../../globals';
 import { ButtonList } from './_ButtonOptions';
 import { Modal } from './Modal';
 import { SaveGame } from './SaveGame';
@@ -57,7 +57,8 @@ export class ChessUi {
             this._click_load(e).then((params) => {
                 if(typeof(params) == 'object' && params.name){
                     let saveGameKey = SAVEGAMEPREFIX + "_" + params.name,
-                        savedGame = JSON.parse(window.localStorage.getItem(saveGameKey)) as SaveGame;
+                        savedGameObj = JSON.parse(window.localStorage.getItem(saveGameKey)),
+                        savedGame = (new SaveGame()).translateFromJson(savedGameObj);
                     
                     if(params.delete) {
                         // console.log('delete game: ' + savedGame.name);
