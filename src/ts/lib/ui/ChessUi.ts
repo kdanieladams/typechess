@@ -199,23 +199,26 @@ export class ChessUi {
         saveGames.forEach((saveGame, i) => {
             let formGroup = document.createElement("div"),
                 radioBtn = document.createElement("input"),
-                radioLbl = document.createElement("label");
+                radioLbl = document.createElement("label"),
+                dateSpan = document.createElement("span");
             
             formGroup.className = "form-group";
             radioBtn.type = "radio";
             radioBtn.name = "savegame";
             radioBtn.value = saveGame.name;
             radioBtn.id = (i + 1) + "_" + saveGame.name;
+            dateSpan.className = "saved-game-date"
 
             if(i == 0) {
                 radioBtn.checked = true;
             }
 
             saveGame.saveDate = new Date(saveGame.saveDate);
+            dateSpan.innerHTML = saveGame.saveDate.toLocaleDateString() 
+                + " " + saveGame.saveDate.toLocaleTimeString();
             radioLbl.setAttribute("for", radioBtn.id);
-            radioLbl.innerHTML = saveGame.saveDate.toLocaleDateString() 
-                + " " + saveGame.saveDate.toLocaleTimeString()
-                + " - " + saveGame.name;
+            radioLbl.innerHTML = saveGame.name;
+            radioLbl.appendChild(dateSpan);
 
             formGroup.appendChild(radioBtn);
             formGroup.appendChild(radioLbl);

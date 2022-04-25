@@ -33,4 +33,4 @@ This is simply my way of figuring out chess for JavaScript, it's not intended to
 ```
 npm run build
 ```
-2. Upload the contents of the `/dist` directory to your webserver.
+2. Upload the contents of the `dist/` directory to your webserver.

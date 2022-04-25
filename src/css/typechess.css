@@ -170,41 +170,8 @@
 
 
 /**
- * Modal Customization
+ * Modal Styles
  */
-/* .swal-content .form-group {
-    text-align: left;
-    margin: 10px 0;
-}
-
-.swal-content .form-group input[type="text"] {
-    border-radius: 5px;
-    border: solid 2px #999;
-    box-sizing: border-box;
-    padding: 5px;
-    width: 100%;
-}
-
-.swal-modal {
-    background-color: #121212;
-    border: solid 1px #ccc;
-    color: #999;
-}
-
-.swal-title {
-    color: #999;
-}
-
-.swal-text {
-    color: #999;
-}
-
-.swal-button--confirm:not(.swal-button--danger) {
-    background-color: #090;
-}
-.swal-button:not([disabled]).swal-button--confirm:not(.swal-button--danger):hover {
-    background-color: #0c0;
-} */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -257,6 +224,12 @@
     border-radius: 5px;
 }
 
+.modal .msg .form-group span.saved-game-date {
+    display: block;
+    font-size: 12px;
+    padding-left: 25px;
+}
+
 .modal .btns {
     padding: 10px;
     border-radius: 0 0 5px 5px;
@@ -274,12 +247,24 @@
     font: bold 1em sans-serif;
 }
 
+.modal .btns button:active {
+    background-color: #777;
+}
+
 .modal .btns button.confirm {
     background-color: #04c;
     color: #ccc;
 }
 
+.modal .btns button.confirm:active {
+    background-color: #028;
+}
+
 .modal .btns button.danger {
     background-color: #c00;
     color: #ccc;
+}
+
+.modal .btns button.danger:active {
+    background-color: #700;
 }

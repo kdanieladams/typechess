@@ -1,16 +1,16 @@
 import { FILE, PIECETYPE, SAVEGAMEPREFIX, SIDE } from '../globals';
 import { Board } from './Board';
 import { ChessAi } from './ChessAi';
-import { ChessUi } from './ui/ChessUi';
-import { King } from './pieces/King';
-import { Piece } from './pieces/_Piece';
 import { Match } from './Match';
-import { Modal } from './ui/Modal';
-import { Rook } from './pieces/Rook';
-import { SaveGame } from './ui/SaveGame';
 import { Team } from './Team';
 import { Turn } from './Turn';
 import { Cell } from './Cell';
+import { Piece } from './pieces/_Piece';
+import { King } from './pieces/King';
+import { Rook } from './pieces/Rook';
+import { ChessUi } from './ui/ChessUi';
+import { Modal } from './ui/Modal';
+import { SaveGame } from './ui/SaveGame';
 
 
 /**
@@ -35,11 +35,11 @@ export class Typechess {
         this.setupPieces(this.match.team1);
         this.setupPieces(this.match.team2);
         
-        this.ui.callback_load = (savedGame) => { return this.loadGame(savedGame); };
-        this.ui.callback_reset = (e) => { return this.reset(); };
-        this.ui.callback_save = (saveName) => { return this.saveGame(saveName); };
-        this.ui.callback_undo = (e) => { return this.undoMove(); };
-        this.ui.callback_engage_ai = (side: number, disengage: boolean = false) => { return this.engageAi(side, disengage); };
+        this.ui.callback_load = (savedGame) => this.loadGame(savedGame);
+        this.ui.callback_reset = (e) => this.reset();
+        this.ui.callback_save = (saveName) => this.saveGame(saveName);
+        this.ui.callback_undo = (e) => this.undoMove();
+        this.ui.callback_engage_ai = (side: number, disengage: boolean = false) => this.engageAi(side, disengage);
 
         return this;
     }
@@ -123,14 +123,20 @@ export class Typechess {
         }
 
         turnSuccess = this.match.finishTurn();
+        this.clearPossible();
+
         if(!turnSuccess) {
+            // undoMove() redraw's the board as it's final action
             this.undoMove();
-            // we're assuming the only move you can't really make is to put you're own king in check
-            this.updateStatus(activeTeam.getSide() + " tried to sacrifice their king!");
+            
+            if(!this.match.ai_engaged || this.ai.side != this.match.whosTurn()) {
+                // we're assuming the only move you can't really make is to put you're own king in check
+                (new Modal("Invalid Move", "You tried to sacrifice your king!  Don't do that!", [false, true])).show();
+            }
+
             return false;
         }
         
-        this.clearPossible();
         this.draw();
         return true;
     }
@@ -142,7 +148,7 @@ export class Typechess {
             let pieceObj = teamObj.pieces[i];
             let cell = this.board.getCellByCoord(piece.getCoord());
             
-            piece.captured = pieceObj.captured;
+            piece.translateFromJson(pieceObj);
             cell.piece = null; 
             
             if(!piece.captured) {
